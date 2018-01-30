@@ -11,7 +11,7 @@ router.get('/books', function(req, res, next) {
       if(err) {
         console.log("ERROR\n" + err);
       }
-      console.log(result);
+      // console.log(result);
       res.status(200).json(result);
     });
 
@@ -22,7 +22,7 @@ router.get('/books', function(req, res, next) {
       if(err) {
         console.log("ERROR\n" + err);
       }
-      console.log(result);
+      // console.log(result);
       if(result.length) {
         res.status(200).json(result[0]);
       }
@@ -43,7 +43,7 @@ router.post('/books/list', function(req, res, next) {
     if(err) {
       console.log(err)
     } else {
-      console.log(result);
+      // console.log(result);
       res.status(200).json(JSON.stringify(result));
     }
   });
@@ -52,14 +52,14 @@ router.post('/books/list', function(req, res, next) {
 router.get('/products', function(req, res, next) {
   var get = req.query;
   console.log(get);
-  if (!get.book_id) {
+  if (!get.prod_id) {
     var sql = "Select prod_id, username, price FROM `product`";
     console.log(sql);
     var result    = db.query(sql, function(err, result) {
       if(err) {
         console.log("ERROR\n" + err);
       }
-      console.log(result);
+      // console.log(result);
       res.status(200).json(result);
     });
 
@@ -70,7 +70,7 @@ router.get('/products', function(req, res, next) {
       if(err) {
         console.log("ERROR\n" + err);
       }
-      console.log(result);
+      // console.log(result);
       if(result.length) {
         res.status(200).json(result[0]);
       }
@@ -90,7 +90,7 @@ router.post('/products/list', function(req, res, next) {
     if(err) {
       console.log(err)
     } else {
-      console.log(result);
+      // console.log(result);
       res.status(200).json(JSON.stringify(result));
     }
   });
