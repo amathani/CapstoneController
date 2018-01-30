@@ -4,18 +4,7 @@ var router = express.Router();
 router.get('/books', function(req, res, next) {
   var get = req.query;
   console.log(get);
-  if (!get.book_id) {
-    var sql = "Select book_id, username, price, title, author FROM `book`";
-    console.log(sql);
-    var result    = db.query(sql, function(err, result) {
-      if(err) {
-        console.log("ERROR\n" + err);
-      }
-      // console.log(result);
-      res.status(200).json(result);
-    });
-
-  } else {
+  if (get.book_id) {
     var sql = "Select * FROM `book` where `book_id` = '" + get.book_id + "'";
     console.log(sql);
     var result    = db.query(sql, function(err, result) {
@@ -26,6 +15,27 @@ router.get('/books', function(req, res, next) {
       if(result.length) {
         res.status(200).json(result[0]);
       }
+    });
+  } else if (get.search){
+    var sql = "SELECT * FROM `book` WHERE MATCH (title,description,author) AGAINST ('" + get.search + "' IN NATURAL LANGUAGE MODE)"
+    console.log(sql);
+    var result    = db.query(sql, function(err, result) {
+      if(err) {
+        console.log("ERROR\n" + err);
+      }
+      // console.log(result);
+      res.status(200).json(result);
+    });
+
+  } else {
+    var sql = "Select book_id, username, price, title, author FROM `book`";
+    console.log(sql);
+    var result    = db.query(sql, function(err, result) {
+      if(err) {
+        console.log("ERROR\n" + err);
+      }
+      // console.log(result);
+      res.status(200).json(result);
     });
   }
 });
@@ -52,18 +62,8 @@ router.post('/books/list', function(req, res, next) {
 router.get('/products', function(req, res, next) {
   var get = req.query;
   console.log(get);
-  if (!get.prod_id) {
-    var sql = "Select prod_id, username, price FROM `product`";
-    console.log(sql);
-    var result    = db.query(sql, function(err, result) {
-      if(err) {
-        console.log("ERROR\n" + err);
-      }
-      // console.log(result);
-      res.status(200).json(result);
-    });
+  if (get.prod_id) {
 
-  } else {
     var sql = "Select * FROM `book` where `product` = '" + get.prod_id + "'";
     console.log(sql);
     var result    = db.query(sql, function(err, result) {
@@ -74,6 +74,27 @@ router.get('/products', function(req, res, next) {
       if(result.length) {
         res.status(200).json(result[0]);
       }
+    });
+
+  } else if (get.search){
+    var sql = "SELECT * FROM `product` WHERE MATCH (title,description) AGAINST ('" + get.search + "' IN NATURAL LANGUAGE MODE)"
+    console.log(sql);
+    var result    = db.query(sql, function(err, result) {
+      if(err) {
+        console.log("ERROR\n" + err);
+      }
+      // console.log(result);
+      res.status(200).json(result);
+    });
+  } else {
+    var sql = "Select prod_id, username, price FROM `product`";
+    console.log(sql);
+    var result    = db.query(sql, function(err, result) {
+      if(err) {
+        console.log("ERROR\n" + err);
+      }
+      // console.log(result);
+      res.status(200).json(result);
     });
   }
 });
