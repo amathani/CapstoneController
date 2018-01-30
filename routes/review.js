@@ -16,8 +16,6 @@ router.get('/', function(req, res, next) {
       }
     });
   }
-
-  if()
 });
 router.post('/', function(req, res, next) {
   var post = req.body;
