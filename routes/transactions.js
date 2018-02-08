@@ -84,8 +84,8 @@ router.get('/requests', function(req, res, next) {
   var get = req.query;
   console.log(get);
   if (get.meetup_id) {
-    var sql = "SELECT meetup_id, username_seller, username_buyer, seller_ready, buyer_ready, date, accepted, location, comments, pending, product_id," +
-     " title FROM `meetups`, `book` WHERE book.id = meetups.product_id, `meetup_id` = '" + get.meetup_id + "'";
+    var sql = "SELECT `meetup_id`, `username_seller`, `username_buyer`, `seller_ready`, `buyer_ready`, `date`, `accepted`, `location`, `comments`, `pending`, `product_id`," +
+     " `title` FROM `meetups`, `book` WHERE book.book_id = meetups.product_id and `meetups.meetup_id` = '" + get.meetup_id + "'";
     console.log(sql);
     var result    = db.query(sql, function(err, result) {
       if(err) {
@@ -96,7 +96,7 @@ router.get('/requests', function(req, res, next) {
     });
   } else if (get.username_seller) {
     var sql = "SELECT meetup_id, username_seller, username_buyer, seller_ready, buyer_ready, date, accepted, location, comments, pending, product_id," +
-     " title FROM `meetups`, `book` WHERE book.id = meetups.product_id, `username_seller` = '" + get.username_seller + "'";
+     " title FROM `meetups`, `book` WHERE book.book_id = meetups.product_id and`meetups.username_seller` = '" + get.username_seller + "'";
     console.log(sql);
     var result    = db.query(sql, function(err, result) {
       if(err) {
@@ -111,7 +111,7 @@ router.get('/requests', function(req, res, next) {
     });
   } else if (get.username_buyer) {
     var sql = "SELECT meetup_id, username_seller, username_buyer, seller_ready, buyer_ready, date, accepted, location, comments, pending, product_id," +
-     " title FROM `meetups`, `book` WHERE book.id = meetups.product_id, `username_buyer` = '" + get.username_buyer + "'";
+     " title FROM `meetups`, `book` WHERE book.book_id = meetups.product_id and `meetups.username_buyer` = '" + get.username_buyer + "'";
     console.log(sql);
     var result    = db.query(sql, function(err, result) {
       if(err) {
@@ -125,7 +125,7 @@ router.get('/requests', function(req, res, next) {
     });
   } else {
     var sql = "SELECT meetup_id, username_seller, username_buyer, seller_ready, buyer_ready, date, accepted, location, comments, pending, product_id," +
-     " title FROM `meetups`, `book` WHERE book.id = meetups.product_id";
+     " title FROM `meetups`, `book` WHERE book.book_id = meetups.product_id";
     console.log(sql);
     var result    = db.query(sql, function(err, result) {
       if(err) {
