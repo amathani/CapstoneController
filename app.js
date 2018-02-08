@@ -15,6 +15,8 @@ var users = require('./routes/users');
 var shop = require('./routes/shop')
 var review = require('./routes/review')
 var transactions = require('./routes/transactions')
+var faqs = require('./routes/faqs')
+
 
 var app = express();
 
