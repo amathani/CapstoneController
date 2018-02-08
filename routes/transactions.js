@@ -27,7 +27,7 @@ router.post('/create/request', function(req, res, next) {
   });
 });
 
-router.post('/request', function(req, res, next) {
+router.post('/requests', function(req, res, next) {
   var post = req.body;
   console.log(post);
   if(!post.meetup_id) {
