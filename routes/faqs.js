@@ -50,7 +50,7 @@ router.post('/answer', function(req, res, next) {
 router.get('/retrieve', function(req, res, next) {
   var get = req.query;
   if(get.product_id) {
-    var sql = "SELECT * FROM `faq` WHERE `product_id` = '" + get.product_id + "' and `answer` IS NULL"
+    var sql = "SELECT * FROM `faqs` WHERE `product_id` = '" + get.product_id + "' and `answer` IS NULL"
     console.log(sql);
 
     var result    = db.query(sql, function(err, result) {
