@@ -13,12 +13,12 @@ router.post('/create/request', function(req, res, next) {
   var result = db.query(sql, function(err, result) {
     if(err) {
       console.log(err)
-      message = "Invalid request made"
+      message = "Invalid request made";
       res.status(400).json({
         "message" : message
       })
     } else {
-      message = "Successfully created request"
+      message = "Successfully created request";
       // console.log(result);
       res.status(200).json({
         "message" : message
@@ -66,12 +66,12 @@ router.post('/requests', function(req, res, next) {
   var result = db.query(sql, function(err, result) {
     if(err) {
       console.log(err)
-      message = "Invalid request made"
+      message = "Invalid request made";
       res.status(400).json({
         "message" : message
       })
     } else {
-      message = "Successfully modified request"
+      message = "Successfully modified request";
       // console.log(result);
       res.status(200).json({
         "message" : message
@@ -100,7 +100,7 @@ router.get('/requests', function(req, res, next) {
     console.log(sql);
     var result    = db.query(sql, function(err, result) {
       if(err) {
-        message = "Incorrect Info"
+        message = "Incorrect Info";
         console.log("ERROR\n" + err);
         res.status(400).json({
           "message" : message
@@ -115,7 +115,21 @@ router.get('/requests', function(req, res, next) {
     console.log(sql);
     var result    = db.query(sql, function(err, result) {
       if(err) {
-        message = "Incorrect Info"
+        message = "Incorrect Info";
+        console.log("ERROR\n" + err);
+        res.status(400).json({
+          "message" : message
+        });
+      }
+      res.status(200).json(result);
+    });
+  } else if(get.book_id) {
+    var sql = "SELECT meetup_id, username_seller, username_buyer, seller_ready, buyer_ready, date, accepted, location, comments, pending, product_id," +
+     " title FROM `meetups`, `book` WHERE book.book_id = meetups.product_id and meetups.product_id = '" + get.book_id + "'";
+    console.log(sql);
+    var result    = db.query(sql, function(err, result) {
+      if(err) {
+        message = "Incorrect Info";
         console.log("ERROR\n" + err);
         res.status(400).json({
           "message" : message

@@ -67,6 +67,18 @@ router.get('/profile', function(req, res, next) {
 
 });
 
+router.get('/listings', function(req, res, next) {
+  var get = req.query;
+  var sql      = "SELECT * FROM `book` WHERE username = '" + get.username;
+  console.log(sql)
+  var query    = db.query(sql, function(err, result) {
+    if(err) {
+      console.log(err);
+    }
+    res.status(200).json(result);
+  });
+});
+
 router.get('/logout', function(req, res, next) {
   console.log(req.session.username);
   req.session.destroy(function(err) {
