@@ -38,9 +38,17 @@ router.post('/request', function(req, res, next) {
   }
   var sql = "";
   if(post.seller_ready) {
-    sql = "UPDATE `meetups` SET `seller_ready` = '1' where `meetup_id` = '" + post.meetup_id + "'";
+    if(post.seller_ready == "true") {
+      sql = "UPDATE `meetups` SET `seller_ready` = '1' where `meetup_id` = '" + post.meetup_id + "'";
+    } else {
+      sql = "UPDATE `meetups` SET `seller_ready` = '0' where `meetup_id` = '" + post.meetup_id + "'";
+    }
   } else if(post.buyer_ready) {
-    sql = "UPDATE `meetups` SET `buyer_ready` = '1' where `meetup_id` = '" + post.meetup_id + "'";
+    if(post.buyer_ready == "true") {
+      sql = "UPDATE `meetups` SET `buyer_ready` = '1' where `meetup_id` = '" + post.meetup_id + "'";
+    } else {
+      sql = "UPDATE `meetups` SET `buyer_ready` = '0' where `meetup_id` = '" + post.meetup_id + "'";
+    }
   } else if(post.accepted) {
     if(post.accepted == "true") {
       sql = "UPDATE `meetups` SET `accpeted` = '1', `pending` = '0' where `meetup_id` = '" + post.meetup_id + "'"
@@ -128,26 +136,6 @@ router.get('/requests', function(req, res, next) {
       res.status(200).json(result);
     });
   }
-});
-
-router.post('/modify', function(req, res, next) {
-  var post = req.body;
-  console.log(post);
-  var sql = ""
-  if (post.response == "rejected") {
-    sql = "UPDATE `meetups` set accpeted = 'false', pending = 'false'";
-  } else {
-    sql = "UPDATE `meetups` set accpeted = 'true', pending = 'false'";
-  }
-  console.log(sql);
-  var result = db.query(sql, function(err, result) {
-    if(err) {
-      console.log(err)
-    } else {
-      // console.log(result);
-      res.status(200).json(JSON.stringify(result));
-    }
-  });
 });
 
 module.exports = router;
