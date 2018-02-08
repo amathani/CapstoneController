@@ -6,7 +6,7 @@ router.post('/create/request', function(req, res, next) {
   var post = req.body;
   console.log(post);
 
-  var sql = "INSERT INTO `meetups` (`username_seller`, `username_buyer`, `date`, `location`, `comments`) VALUES ('" + post.username_seller + "','" + "1" +
+  var sql = "INSERT INTO `meetups` (`username_seller`, `username_buyer`, `date`, `location`, `comments`, `product_id`) VALUES ('" + post.username_seller + "','" + "1" +
   "','" + post.username_buyer + "','" + post.date + "','" + post.loc + "','" + post.comments + "','" + post.product_id +"')";
   console.log(sql);
 
