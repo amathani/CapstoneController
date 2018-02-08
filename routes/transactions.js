@@ -91,7 +91,11 @@ router.get('/requests', function(req, res, next) {
         console.log("ERROR\n" + err);
       }
       // console.log(result);
-        res.status(200).json(result);
+      if(result.length) {
+        res.status(200).json(result[0]);
+      } else {
+        res.status(200);
+      }
     });
   } else if (get.username_seller) {
     var sql = "Select * FROM `meetups` where `username_seller` = '" + get.username_seller + "'";
@@ -106,6 +110,8 @@ router.get('/requests', function(req, res, next) {
       }
       if(result.length) {
         res.status(200).json(result[0]);
+      } else {
+        res.status(200);
       }
     });
   } else if (get.username_buyer) {
@@ -121,6 +127,8 @@ router.get('/requests', function(req, res, next) {
       }
       if(result.length) {
         res.status(200).json(result[0]);
+      } else {
+        res.status(200);
       }
     });
   } else {
