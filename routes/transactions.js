@@ -93,6 +93,8 @@ router.get('/requests', function(req, res, next) {
       // console.log(result);
       if(result.length) {
         res.status(200).json(result[0]);
+      } else {
+        res.status(200);
       }
     });
   } else if (get.username_seller) {
