@@ -51,9 +51,9 @@ router.post('/requests', function(req, res, next) {
     }
   } else if(post.accepted) {
     if(post.accepted == "true") {
-      sql = "UPDATE `meetups` SET `accpeted` = '1', `pending` = '0' where `meetup_id` = '" + post.meetup_id + "'"
+      sql = "UPDATE `meetups` SET `accepted` = '1', `pending` = '0' where `meetup_id` = '" + post.meetup_id + "'"
     } else {
-      sql = "UPDATE `meetups` SET `accpeted` = '0', `pending` = '0' where `meetup_id` = '" + post.meetup_id + "'"
+      sql = "UPDATE `meetups` SET `accepted` = '0', `pending` = '0' where `meetup_id` = '" + post.meetup_id + "'"
     }
   } else {
     message = "Invalid POST request";
