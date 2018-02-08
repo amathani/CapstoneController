@@ -68,6 +68,7 @@ router.get('/profile', function(req, res, next) {
 });
 
 router.get('/logout', function(req, res, next) {
+  console.log(req.session.username);
   req.session.destroy(function(err) {
     res.status(200).json("Successfully Logged Out!")
   });
