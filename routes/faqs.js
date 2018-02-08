@@ -5,7 +5,7 @@ var router = express.Router();
 router.post('/ask', function(req, res, next) {
   var post = req.body;
   console.log(post);
-  var sql = "INSERT into `faqs` (`asker_usernames`, `owner_usernames`, `question`, `product_id`" +
+  var sql = "INSERT into `faqs` (`asker_username`, `owner_username`, `question`, `product_id`" +
   ") VALUES ('" + post.asker_usernames + "','" + post.owner_usernames + "','" + post.question + "','" + post.product_id + "')";
   console.log(sql);
 
