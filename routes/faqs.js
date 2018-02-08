@@ -47,19 +47,26 @@ router.post('/answer', function(req, res, next) {
   });
 });
 
-router.post('/retrieve', function(req, res, next) {
-  var post = req.body;
-  var sql = "SELECT * FROM `faq` WHERE `owner_usernames` = " + post.username + " and `answer` IS NULL"
-  console.log(sql);
+router.get('/retrieve', function(req, res, next) {
+  var get = req.query;
+  if(get.product_id) {
+    var sql = "SELECT * FROM `faq` WHERE `product_id` = '" + get.product_id + "' and `answer` IS NULL"
+    console.log(sql);
 
-  var result    = db.query(sql, function(err, result) {
-    if(err) {
-      console.log("ERROR\n" + err);
-      res.status(400);
-    } else {
-      res.status(200).json(result);
-    }
-  });
+    var result    = db.query(sql, function(err, result) {
+      if(err) {
+        console.log("ERROR\n" + err);
+        res.status(400);
+      } else {
+        res.status(200).json(result);
+      }
+    });
+  } else {
+    message = "Invalid GET request";
+    res.status(400).json({
+      "message" : message
+    });
+  }
 });
 
 module.exports = router;
