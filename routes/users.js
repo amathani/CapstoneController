@@ -50,8 +50,8 @@ router.post('/login', function(req, res, next) {
     } else {
       message = "failed";
       res.status(400).json({
-        "User" : username,
-        "Message" : message
+        "user" : username,
+        "message" : message
       });
     }
   });

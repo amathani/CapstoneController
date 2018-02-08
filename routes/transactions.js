@@ -13,9 +13,61 @@ router.post('/create/request', function(req, res, next) {
   var result = db.query(sql, function(err, result) {
     if(err) {
       console.log(err)
+      message = "Invalid request made"
+      res.status(400).json({
+        "message" : message
+      })
     } else {
+      message = "Successfully created request"
       // console.log(result);
-      res.status(200).json(JSON.stringify(result));
+      res.status(200).json({
+        "message" : message
+      });
+    }
+  });
+});
+
+router.post('/request', function(req, res, next) {
+  var post = req.body;
+  console.log(post);
+  if(!post.meetup_id) {
+    message = "No meetup_id provided";
+    res.status(400).json({
+      "message" : message
+    });
+  }
+  var sql = "";
+  if(post.seller_ready) {
+    sql = "UPDATE `meetups` SET `seller_ready` = '1' where `meetup_id` = '" + post.meetup_id + "'";
+  } else if(post.buyer_ready) {
+    sql = "UPDATE `meetups` SET `buyer_ready` = '1' where `meetup_id` = '" + post.meetup_id + "'";
+  } else if(post.accepted) {
+    if(post.accepted == "true") {
+      sql = "UPDATE `meetups` SET `accpeted` = '1', `pending` = '0' where `meetup_id` = '" + post.meetup_id + "'"
+    } else {
+      sql = "UPDATE `meetups` SET `accpeted` = '0', `pending` = '0' where `meetup_id` = '" + post.meetup_id + "'"
+    }
+  } else {
+    message = "Invalid POST request";
+    res.status(400).json({
+      "message" : message
+    });
+  }
+  console.log(sql);
+
+  var result = db.query(sql, function(err, result) {
+    if(err) {
+      console.log(err)
+      message = "Invalid request made"
+      res.status(400).json({
+        "message" : message
+      })
+    } else {
+      message = "Successfully created request"
+      // console.log(result);
+      res.status(200).json({
+        "message" : message
+      });
     }
   });
 });
@@ -31,6 +83,36 @@ router.get('/requests', function(req, res, next) {
         console.log("ERROR\n" + err);
       }
       // console.log(result);
+      if(result.length) {
+        res.status(200).json(result[0]);
+      }
+    });
+  } else if (get.username_seller) {
+    var sql = "Select * FROM `meetups` where `username_seller` = '" + get.username_seller + "'";
+    console.log(sql);
+    var result    = db.query(sql, function(err, result) {
+      if(err) {
+        message = "Incorrect Info"
+        console.log("ERROR\n" + err);
+        res.status(400).json({
+          "message" : message
+        });
+      }
+      if(result.length) {
+        res.status(200).json(result[0]);
+      }
+    });
+  } else if (get.username_buyer) {
+    var sql = "Select * FROM `meetups` where `username_buyer` = '" + get.username_buyer + "'";
+    console.log(sql);
+    var result    = db.query(sql, function(err, result) {
+      if(err) {
+        message = "Incorrect Info"
+        console.log("ERROR\n" + err);
+        res.status(400).json({
+          "message" : message
+        });
+      }
       if(result.length) {
         res.status(200).json(result[0]);
       }
