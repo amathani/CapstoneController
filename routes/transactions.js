@@ -22,7 +22,7 @@ router.post('/create/request', function(req, res, next) {
   console.log(post);
 
   var sql = "INSERT INTO `meetups` (`username_seller`, `username_buyer`, `date`, `comments`, `product_id`, `longitude`, `latitude`) VALUES ('" + post.username_seller +
-  "','" + post.username_buyer + "','" + post.date + "','" + post.comments + "','" + post.product_id + + "','" + post.longitude + "','" + post.latitude + "')";
+  "','" + post.username_buyer + "','" + post.date + "','" + post.comments + "','" + post.product_id + "','" + post.longitude + "','" + post.latitude + "')";
   console.log(sql);
 
   var result = db.query(sql, function(err, result) {
