@@ -1,13 +1,28 @@
 var express = require('express');
 var router = express.Router();
 
-/* GET home page. */
+router.get('/locations', function(req, res, next) {
+  var get = req.query;
+  var sql      = "SELECT * FROM `meetups_location`";
+  console.log(sql)
+  var query    = db.query(sql, function(err, result) {
+    if(err) {
+      console.log(err);
+      message = "invalid request";
+      res.status(400).json({
+        "message" : message
+      })
+    }
+    res.status(200).json(result);
+  });
+});
+
 router.post('/create/request', function(req, res, next) {
   var post = req.body;
   console.log(post);
 
-  var sql = "INSERT INTO `meetups` (`username_seller`, `username_buyer`, `date`, `location`, `comments`, `product_id`) VALUES ('" + post.username_seller +
-  "','" + post.username_buyer + "','" + post.date + "','" + post.loc + "','" + post.comments + "','" + post.product_id +"')";
+  var sql = "INSERT INTO `meetups` (`username_seller`, `username_buyer`, `date`, `comments`, `product_id`, `longitude`, `latitude`) VALUES ('" + post.username_seller +
+  "','" + post.username_buyer + "','" + post.date + "','" + post.comments + "','" + post.product_id + + "','" + post.longitude + "','" + post.latitude + "')";
   console.log(sql);
 
   var result = db.query(sql, function(err, result) {
