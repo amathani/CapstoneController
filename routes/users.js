@@ -24,6 +24,7 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/avatar', function(req, res, next) {
+  console.console.log("here!");
   console.log(req.body);
   console.log(req.file);
   if(!req.file) {
