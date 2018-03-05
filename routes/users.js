@@ -23,7 +23,8 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/avatar', upload.single('avatar'), function(req, res, next) {
-  console.log(req.body)
+  console.log(req.body);
+  console.log(req.file);
   if(!req.file) {
     console.log("No File Received");
     message = "No File Received";
