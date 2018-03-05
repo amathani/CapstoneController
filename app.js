@@ -3,7 +3,7 @@ var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
-var busboy = require('connect-busboy')
+var busboy = require('express-busboy')
 
 var routes = require('./routes')
 var http = require('http')
