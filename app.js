@@ -47,7 +47,7 @@ app.use(function(req, res, next) {
   next();
 });
 app.use(logger('dev'));
-bb.extend(app, {
+busboy.extend(app, {
     upload: true,
     path: '/uploads',
     allowedPath: /./
