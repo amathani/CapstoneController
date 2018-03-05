@@ -47,7 +47,7 @@ app.use(function(req, res, next) {
   next();
 });
 app.use(logger('dev'));
-// busboy.extend(app)
+busboy.extend(app)
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
