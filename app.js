@@ -3,7 +3,7 @@ var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
-var busboy = require('express-busboy')
+var busboy = require('connect-busboy')
 
 var routes = require('./routes')
 var http = require('http')
@@ -47,8 +47,7 @@ app.use(function(req, res, next) {
   next();
 });
 app.use(logger('dev'));
-busboy.extend(app)
-
+app.use(busboy());
 app.post('/fileupload', function(req, res) {
     var fstream;
     req.pipe(req.busboy);
