@@ -56,11 +56,7 @@ app.use(session({
               saveUninitialized: true,
               cookie: { maxAge: 60000 }
             }));
-
-app.post('/profile', upload.single('avatar'), function (req, res, next) {
-  console.log(req.body)
-  console.log(req.file);
-});
+            
 app.use('/', index);
 app.use('/users', users);
 app.use('/shop', shop);

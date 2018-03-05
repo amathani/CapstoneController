@@ -15,7 +15,8 @@ var storage = multer.diskStorage({
     });
   }
 });
-var upload = multer({ storage: storage });
+var upload = multer({ dest: '/tmp/' });
+var router = express.Router();
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -38,6 +39,12 @@ router.post('/avatar', function(req, res, next) {
       message: message
     });
   }
+});
+
+router.post('/saveBlog', upload.any(), function(req, res, next) {
+  console.log(req.body, 'Body');
+  console.log(req.files, 'files');
+  res.end();
 });
 
 router.post('/signup', function(req, res, next) {
