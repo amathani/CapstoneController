@@ -17,6 +17,10 @@ var review = require('./routes/review')
 var transactions = require('./routes/transactions')
 var faqs = require('./routes/faqs')
 
+var multer  = require('multer')
+var upload = multer({ dest: './uploads/' })
+
+
 var app = express();
 
 var mysql = require('mysql');
