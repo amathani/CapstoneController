@@ -40,12 +40,12 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
 // uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-// app.use(function(req, res, next) {
-//   res.header("Access-Control-Allow-Origin", "*");
-//   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-//   next();
-// });
+// app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
 app.use(logger('dev'));
 busboy.extend(app, {
     upload: true,
@@ -62,8 +62,8 @@ app.use(session({
             }));
 
 app.post('/profile', upload.single('avatar'), function (req, res, next) {
-  console.log(req.body)
-  console.log(req.file);
+  console.log(req.body);
+  console.log(req.files);
 });
 app.use('/', index);
 app.use('/users', users);
