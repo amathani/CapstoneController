@@ -58,7 +58,8 @@ app.use(session({
             }));
 
 app.post('/profile', upload.single('avatar'), function (req, res, next) {
-  console.log(req.files);
+  console.log(req.body)
+  console.log(req.file);
 });
 app.use('/', index);
 app.use('/users', users);
