@@ -48,6 +48,19 @@ app.use(function(req, res, next) {
 });
 app.use(logger('dev'));
 busboy.extend(app)
+
+app.post('/fileupload', function(req, res) {
+    var fstream;
+    req.pipe(req.busboy);
+    req.busboy.on('file', function (fieldname, file, filename) {
+        console.log("Uploading: " + filename);
+        fstream = fs.createWriteStream(__dirname + '/files/' + filename);
+        file.pipe(fstream);
+        fstream.on('close', function () {
+            res.redirect('back');
+        });
+    });
+});
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
@@ -56,7 +69,7 @@ app.use(session({
               saveUninitialized: true,
               cookie: { maxAge: 60000 }
             }));
-            
+
 app.use('/', index);
 app.use('/users', users);
 app.use('/shop', shop);
