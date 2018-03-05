@@ -3,7 +3,7 @@ var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
-var busboy = require('connect-busboy')
+var busboy = require('express-busboy')
 
 var routes = require('./routes')
 var http = require('http')
@@ -16,6 +16,10 @@ var shop = require('./routes/shop')
 var review = require('./routes/review')
 var transactions = require('./routes/transactions')
 var faqs = require('./routes/faqs')
+
+var multer  = require('multer')
+var upload = multer({ dest: 'uploads/' })
+
 
 var app = express();
 
@@ -43,20 +47,7 @@ app.use(function(req, res, next) {
   next();
 });
 app.use(logger('dev'));
-app.use(busboy());
-app.post('/fileupload', function(req, res) {
-  console.log(req.file);
-  var fstream;
-  req.pipe(req.busboy);
-  req.busboy.on('file', function (fieldname, file, filename) {
-      console.log("Uploading: " + filename);
-      fstream = fs.createWriteStream(__dirname + '/files/' + filename);
-      file.pipe(fstream);
-      fstream.on('close', function () {
-          res.status(200);
-      });
-  });
-});
+busboy.extend(app)
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
@@ -66,6 +57,10 @@ app.use(session({
               cookie: { maxAge: 60000 }
             }));
 
+app.post('/profile', upload.single('avatar'), function (req, res, next) {
+  console.log(req.body)
+  console.log(req.file);
+});
 app.use('/', index);
 app.use('/users', users);
 app.use('/shop', shop);
