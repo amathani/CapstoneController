@@ -1,9 +1,41 @@
 var express      = require('express');
 var router       = express.Router();
+var multer = require('multer');
+var crypto = require('crypto');
+var storage = multer.diskStorage({
+  destination: function(req, file, cb) {
+    cb(null, '/upload')
+  }
+  filename: function(req, file, cb) {
+    crypto.pseudoRandomBytes(16, function(err, raw) {
+      if (err) {
+        return cb(err);
+      }
+      cb(null, raw.toString('hex') + path.extname(file.originalname));
+    });
+  }
+});
+var upload = multer({ storage: storage });
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
   res.send('respond with a resource');
+});
+
+router.post('/avatar', upload.single('avatar'), function(req, res, next) {
+  if(!req.file) {
+    console.log("No File Received");
+    message = "No File Received";
+    return res.status(400).json({
+      message: message
+    });
+  } else {
+    console.log('file received');
+    message = "file received"
+    return res.status(400).json({
+      message: message
+    });
+  }
 });
 
 router.post('/signup', function(req, res, next) {
