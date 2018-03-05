@@ -17,6 +17,9 @@ var review = require('./routes/review')
 var transactions = require('./routes/transactions')
 var faqs = require('./routes/faqs')
 
+var multer  = require('multer')
+var upload = multer({ dest: 'uploads/' })
+
 
 var app = express();
 
@@ -54,6 +57,9 @@ app.use(session({
               cookie: { maxAge: 60000 }
             }));
 
+app.post('/profile', upload.single('avatar'), function (req, res, next) {
+  console.log(req.file);
+});
 app.use('/', index);
 app.use('/users', users);
 app.use('/shop', shop);
