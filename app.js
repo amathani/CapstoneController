@@ -47,7 +47,11 @@ app.use(function(req, res, next) {
   next();
 });
 app.use(logger('dev'));
-busboy.extend(app)
+bb.extend(app, {
+    upload: true,
+    path: '/uploads',
+    allowedPath: /./
+});
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
