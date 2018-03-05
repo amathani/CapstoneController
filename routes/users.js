@@ -4,7 +4,7 @@ var multer = require('multer');
 var crypto = require('crypto');
 var storage = multer.diskStorage({
   destination: function(req, file, cb) {
-    cb(null, '/upload')
+    cb(null, './uploads')
   },
   filename: function(req, file, cb) {
     crypto.pseudoRandomBytes(16, function(err, raw) {
@@ -15,8 +15,6 @@ var storage = multer.diskStorage({
     });
   }
 });
-var multer = require('multer');
-var upload = multer({ dest: '/tmp/' });
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
