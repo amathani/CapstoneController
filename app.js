@@ -47,7 +47,7 @@ app.use(function(req, res, next) {
   next();
 });
 app.use(logger('dev'));
-busboy.extend(app)
+// busboy.extend(app)
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
@@ -58,7 +58,7 @@ app.use(session({
             }));
 
 app.post('/profile', upload.single('avatar'), function (req, res, next) {
-  console.log(req.file);
+  console.log(req.files);
 });
 app.use('/', index);
 app.use('/users', users);
