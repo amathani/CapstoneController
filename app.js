@@ -54,6 +54,7 @@ busboy.extend(app, {
 });
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+console.log(path.join(__dirname + '/uploads'));
 app.use('/images', express.static(path.join(__dirname + '/uploads')));
 app.use(session({
               secret: 'keyboard cat',
