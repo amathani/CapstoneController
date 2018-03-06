@@ -3,23 +3,20 @@ var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
-var busboy = require('express-busboy')
+var busboy = require('express-busboy');
 
-var routes = require('./routes')
-var http = require('http')
+var routes = require('./routes');
+var http = require('http');
 var path = require('path');
-var session = require('express-session')
+var session = require('express-session');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
-var shop = require('./routes/shop')
-var review = require('./routes/review')
-var transactions = require('./routes/transactions')
-var faqs = require('./routes/faqs')
-
-var multer  = require('multer')
-var upload = multer({ dest: './uploads/' })
-
+var shop = require('./routes/shop');
+var review = require('./routes/review');
+var transactions = require('./routes/transactions');
+var faqs = require('./routes/faqs');
+var uploads = require('./routes/uploads');
 
 var app = express();
 
@@ -39,6 +36,9 @@ global.db = connection;
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
+//for file uploading
+app.use('/uploads', uploads);
+
 // uncomment after placing your favicon in /public
 // app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(function(req, res, next) {
@@ -54,6 +54,7 @@ busboy.extend(app, {
 });
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/images', express.static(path.join(__dirname + '/uploads')));
 app.use(session({
               secret: 'keyboard cat',
               resave: false,
@@ -61,10 +62,6 @@ app.use(session({
               cookie: { maxAge: 60000 }
             }));
 
-app.post('/profile', upload.single('avatar'), function (req, res, next) {
-  console.log(req.body);
-  console.log(req.files);
-});
 app.use('/', index);
 app.use('/users', users);
 app.use('/shop', shop);
