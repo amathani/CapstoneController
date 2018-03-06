@@ -78,6 +78,10 @@ router.get('/products', function(req, res, next) {
     });
 
   } else if (get.search){
+    var range = "";
+    if(get.cost_high && get.cost_low) {
+      range = " and `price` BETWEEN get.cost_low and get.cost_high";
+    }
     var sql = "SELECT * FROM `product` WHERE MATCH (title,description) AGAINST ('" + get.search + "' IN NATURAL LANGUAGE MODE)"
     console.log(sql);
     var result    = db.query(sql, function(err, result) {
@@ -88,7 +92,11 @@ router.get('/products', function(req, res, next) {
       res.status(200).json(result);
     });
   } else {
-    var sql = "Select * FROM `product`";
+    var range = "";
+    if(get.cost_high && get.cost_low) {
+      range = " WHERE `price` BETWEEN get.cost_low and get.cost_high";
+    }
+    var sql = "Select * FROM `product`" + range;
     console.log(sql);
     var result    = db.query(sql, function(err, result) {
       if(err) {
