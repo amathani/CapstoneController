@@ -148,7 +148,7 @@ router.get('/books/ajax', function(req, res, next) {
     for(i=0; i<result.length; i++) {
       data.push(result[i].title);
     }
-    res.status(200).json(JSON.stringify(data));
+    res.status(200).json(data);
   });
 });
 
