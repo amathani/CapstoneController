@@ -44,8 +44,9 @@ router.post('/books/list', function(req, res, next) {
   var post = req.body;
   console.log(post);
 
-  var sql = "INSERT INTO `book` (`username`, `uni_id`, `price`, `description`, `preferred_payment_method`, `book_photo_id`, `title`, `author`, `isbn`) VALUES ('" + post.username + "','" + "1" + "','" + post.price + "','" + post.desc + "','" + post.payment + "','"
-  + "1" + "','" + post.title + "','" + post.author + "','"
+  var sql = "INSERT INTO `book` (`username`, `uni_id`, `price`, `description`, `preferred_payment_method`, `title`, `author`, `isbn`) VALUES ('"
+  + post.username + "','" + "1" + "','" + post.price + "','" + post.desc + "','" + post.payment
+  + "','" + post.title + "','" + post.author + "','"
   + post.isbn + "')";
   console.log(sql);
 

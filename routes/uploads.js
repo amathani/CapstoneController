@@ -30,7 +30,7 @@ router.post('/profile', upload.single('avatar'), function(req, res, next) {
     console.log('file received');
     message = "file received"
     var body = req.body;
-    var sql = "UPDATE `user` SET `image_names`='" + req.file.path + "' WHERE `username`='" + body.username + "'";
+    var sql = "UPDATE `user` SET `image_names`='" + req.file.filename + "' WHERE `username`='" + body.username + "'";
     console.log(sql);
 
     var result = db.query(sql, function(err, result) {
@@ -58,19 +58,23 @@ router.post('/product', upload.array('images'), function(req, res, next) {
       message: message
     });
   } else {
+    var image_paths = "";
     for (var keys in req.files) {
       thisFile = req.files[keys];
-      console.log(thisFile.originalname);
+      console.log(thisFile.filename);
+      image_paths += thisFile.filename + " ";
     }
     console.log('file received');
     message = "file received";
+
     //Process the product
     var post = req.body;
     console.log(post);
-    if(!post.product_id) {
-      var sql = "INSERT INTO `product` (`username`, `uni_id`, `price`, `description`, `preferred_payment_method`, `product_photo_id`) VALUES ('"
-      + post.username + "','" + "1" + "','" + post.price + "','" + post.desc + "','" + post.payment + "','"
-      + "1" + "')";
+    if(!post.book_id) {
+      var sql = "INSERT INTO `book` (`username`, `uni_id`, `price`, `description`, `preferred_payment_method`, `title`, `author`, `isbn`, `image_paths`) VALUES ('"
+      + post.username + "','" + "1" + "','" + post.price + "','" + post.desc + "','" + post.payment
+      + "','" + post.title + "','" + post.author + "','"
+      + post.isbn + "','" + image_paths + "')";
       console.log(sql);
 
       var result = db.query(sql, function(err, result) {
@@ -80,6 +84,18 @@ router.post('/product', upload.array('images'), function(req, res, next) {
           return res.status(400).json({
             message: message
           });
+        }
+      });
+    } else {
+      var sql = "UPDATE `book` SET `image_paths`='" + image_paths + "' WHERE `book_id`='" + post.book_id + "'";
+      console.log(sql);
+      var result = db.query(sql, function(err, result) {
+        if(err) {
+          console.log(err)
+          message = "Invalid request made";
+          res.status(400).json({
+            "message" : message
+          })
         }
       });
     }
