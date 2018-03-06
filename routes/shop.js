@@ -17,7 +17,11 @@ router.get('/books', function(req, res, next) {
       }
     });
   } else if (get.search){
-    var sql = "SELECT * FROM `book` WHERE MATCH (title,description,author) AGAINST ('" + get.search + "' IN NATURAL LANGUAGE MODE)"
+    var range = "";
+    if(get.cost_high && get.cost_low) {
+      range = " and `price` BETWEEN '"+ get.cost_low + "' and '"+ get.cost_high + "'";
+    }
+    var sql = "SELECT * FROM `book` WHERE MATCH (title,description,author) AGAINST ('" + get.search + "' IN NATURAL LANGUAGE MODE)" + range;
     console.log(sql);
     var result    = db.query(sql, function(err, result) {
       if(err) {
@@ -28,7 +32,11 @@ router.get('/books', function(req, res, next) {
     });
 
   } else {
-    var sql = "Select * FROM `book`";
+    var range = "";
+    if(get.cost_high && get.cost_low) {
+      range = " WHERE `price` BETWEEN '" + get.cost_low  +"' and '" + get.cost_high + "'";
+    }
+    var sql = "Select * FROM `book`" + range;
     console.log(sql);
     var result    = db.query(sql, function(err, result) {
       if(err) {
@@ -80,7 +88,7 @@ router.get('/products', function(req, res, next) {
   } else if (get.search){
     var range = "";
     if(get.cost_high && get.cost_low) {
-      range = " and `price` BETWEEN get.cost_low and get.cost_high";
+      range = " and `price` BETWEEN '"+ get.cost_low + "' and '"+ get.cost_high + "'";
     }
     var sql = "SELECT * FROM `product` WHERE MATCH (title,description) AGAINST ('" + get.search + "' IN NATURAL LANGUAGE MODE)"
     console.log(sql);
@@ -94,7 +102,7 @@ router.get('/products', function(req, res, next) {
   } else {
     var range = "";
     if(get.cost_high && get.cost_low) {
-      range = " WHERE `price` BETWEEN get.cost_low and get.cost_high";
+      range = " WHERE `price` BETWEEN '" + get.cost_low  +"' and '" + get.cost_high + "'";
     }
     var sql = "Select * FROM `product`" + range;
     console.log(sql);
@@ -123,6 +131,24 @@ router.post('/products/list', function(req, res, next) {
       // console.log(result);
       res.status(200).json(JSON.stringify(result));
     }
+  });
+});
+
+router.get('/books/ajax', function(req, res, next) {
+  var get = req.query;
+  console.log(get);
+  var sql = "Select `title` FROM `book` WHERE `title` LIKE '%" + get.search + "%'";
+  console.log(sql);
+  var result    = db.query(sql, function(err, result) {
+    if(err) {
+      console.log("ERROR\n" + err);
+    }
+    var data=[];
+    // console.log(result);
+    for(i=0; i<result.length; i++) {
+      data.push(result[i].title);
+    }
+    res.status(200).json(JSON.stringify(data));
   });
 });
 
