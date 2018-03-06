@@ -28,7 +28,7 @@ router.get('/books', function(req, res, next) {
     });
 
   } else {
-    var sql = "Select book_id, username, price, title, author FROM `book`";
+    var sql = "Select * FROM `book`";
     console.log(sql);
     var result    = db.query(sql, function(err, result) {
       if(err) {
