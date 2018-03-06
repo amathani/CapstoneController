@@ -64,7 +64,16 @@ router.post('/profile', function(req, res, next) {
 });
 
 router.get('/profile', function(req, res, next) {
-
+  var get = req.query;
+  var sql      = "SELECT * FROM `user` WHERE username = '" + get.username + "'";
+  console.log(sql)
+  var query    = db.query(sql, function(err, result) {
+    if(err) {
+      console.log(err);
+      res.status(400);
+    }
+    res.status(200).json(result);
+  });
 });
 
 router.get('/listings', function(req, res, next) {

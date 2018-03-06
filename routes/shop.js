@@ -88,7 +88,7 @@ router.get('/products', function(req, res, next) {
       res.status(200).json(result);
     });
   } else {
-    var sql = "Select prod_id, username, price FROM `product`";
+    var sql = "Select * FROM `product`";
     console.log(sql);
     var result    = db.query(sql, function(err, result) {
       if(err) {
