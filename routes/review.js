@@ -28,9 +28,13 @@ router.post('/', function(req, res, next) {
   var result = db.query(sql, function(err, result) {
     if(err) {
       console.log(err)
+      res.status(400).json({
+        message: "Error occured while adding review"
+      });
     } else {
-      // console.log(result);
-      res.status(200).json(JSON.stringify(result));
+      res.status(200).json({
+        message: "Added review for user"
+      });
     }
   });
 });
