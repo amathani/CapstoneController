@@ -22,7 +22,13 @@ router.get('/books', function(req, res, next) {
     if(get.cost_high && get.cost_low) {
       range = " and `price` BETWEEN '"+ get.cost_low + "' and '"+ get.cost_high + "'";
     }
-    var sql = "SELECT * FROM `book` WHERE MATCH (title,description,author) AGAINST ('" + get.search + "' IN NATURAL LANGUAGE MODE)" + range;
+    var order_by = "";
+    if(get.order_by == "ASC") {
+      order_by = " ORDER BY `price` ASC"
+    } else if(get.order_by == "DESC") {
+      order_by = " ORDER BY `price` DESC"
+    }
+    var sql = "SELECT * FROM `book` WHERE MATCH (title,description,author) AGAINST ('" + get.search + "' IN NATURAL LANGUAGE MODE)" + range + order_by;
     console.log(sql);
     var result    = db.query(sql, function(err, result) {
       if(err) {
@@ -37,7 +43,15 @@ router.get('/books', function(req, res, next) {
     if(get.cost_high && get.cost_low) {
       range = " WHERE `price` BETWEEN '" + get.cost_low  +"' and '" + get.cost_high + "'";
     }
-    var sql = "Select * FROM `book`" + range;
+
+    var order_by = "";
+    if(get.order_by == "ASC") {
+      order_by = " ORDER BY `price` ASC"
+    } else if(get.order_by == "DESC") {
+      order_by = " ORDER BY `price` DESC"
+    }
+
+    var sql = "Select * FROM `book`" + range + order_by;
     console.log(sql);
     var result    = db.query(sql, function(err, result) {
       if(err) {
@@ -69,7 +83,7 @@ router.post('/books/list', function(req, res, next) {
   });
 });
 
-router.get('/getBookInfo', function(req, res, next) {
+router.get('/getInfo', function(req, res, next) {
   var get = req.query;
   if(!get.isbn) {
     message = "No ISBN found";
