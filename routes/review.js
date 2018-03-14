@@ -13,14 +13,7 @@ router.get('/', function(req, res, next) {
           message: "Invalid Request"
         });
       }
-      // console.log(result);
-      if(result.length) {
-        res.status(200).json(result);
-      } else {
-        res.status(200).json({
-          message: "No Reviews Found"
-        });
-      }
+      res.status(200).json(result);
     });
   }
 });
