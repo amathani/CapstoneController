@@ -40,7 +40,7 @@ router.post('/login', function(req, res, next) {
   db.query(query, function(err, results) {
     if(results.length == 1) {
       req.session.username = results[0].username;
-      console.log(results[0].username);
+      console.log(req.session.username);
       message = "successful";
       console.log(message);
       res.status(200).json({

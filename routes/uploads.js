@@ -3,6 +3,12 @@ var router       = express.Router();
 var multer = require('multer');
 var crypto = require('crypto');
 var path = require('path');
+var isbn = require('node-isbn');
+
+var imageToTextDecoder = require('image-to-text');
+
+ var key = '2SrmhTT5yQ8VnnOeZiNdQw'; //Your key registered from cloudsightapi @ https://cloudsightapi.com
+ imageToTextDecoder.setAuth(key);
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -101,6 +107,62 @@ router.post('/product', upload.array('images'), function(req, res, next) {
     }
     return res.status(200).json({
       message: message
+    });
+  }
+});
+
+router.post('/getInfo', upload.single('barcode'), function(req, res, next) {
+  console.log(req.body);
+  console.log(req.file);
+  if(!req.file) {
+    console.log("No File Received");
+    message = "No File Received";
+    return res.status(400).json({
+      message: message
+    });
+  } else {
+    console.log('file received');
+    message = "file received";
+    var file = {
+      name: req.file.filename,
+      path: './uploads/'
+    };
+    imageToTextDecoder.getKeywordsForImage(file).then(function(keywords, error) {
+      if(error) {
+        res.status(400).json({
+          message: "File Parsing Error"
+        });
+      } else {
+        console.log(keywords);
+        keywords.trim();
+        words = keywords.split(" ");
+        var index = words.indexOf("barcode");
+        var isbn_string = "";
+        console.log(words);
+        for (i = 0; i < words.length; i++) {
+          if (!isNaN(words[i]) && words[i].length != 0) {
+            isbn_string = words[i]
+            break;
+          }
+        }
+        if(isbn_string.lenght == 0) {
+          res.status(400).json({
+            message: "Invalid ISBN"
+          });
+        }
+        console.log(isbn_string);
+        isbn.resolve(isbn_string, function(err, book) {
+          if(err) {
+            console.log()
+            message = "Invalid ISBN/Book not found";
+            return res.status(400).json({
+              message: message
+            });
+          } else {
+            return res.status(400).json(book);
+          }
+        });
+      }
     });
   }
 });

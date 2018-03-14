@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var isbn = require('node-isbn');
 
 router.get('/books', function(req, res, next) {
   var get = req.query;
@@ -64,6 +65,27 @@ router.post('/books/list', function(req, res, next) {
     } else {
       // console.log(result);
       res.status(200).json(JSON.stringify(result));
+    }
+  });
+});
+
+router.get('/getBookInfo', function(req, res, next) {
+  var get = req.query;
+  if(!get.isbn) {
+    message = "No ISBN found";
+    return res.status(400).json({
+      message: message
+    });
+  }
+  isbn.resolve(get.isbn, function(err, book) {
+    if(err) {
+      console.log()
+      message = "Invalid ISBN/Book not found";
+      return res.status(400).json({
+        message: message
+      });
+    } else {
+      return res.status(400).json(book);
     }
   });
 });
