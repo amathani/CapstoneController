@@ -6,11 +6,6 @@ var path = require('path');
 var isbn = require('node-isbn');
 var quagga = require('quagga').default;
 
-var imageToTextDecoder = require('image-to-text');
-
-var key = '2SrmhTT5yQ8VnnOeZiNdQw'; //Your key registered from cloudsightapi @ https://cloudsightapi.com
-imageToTextDecoder.setAuth(key);
-
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, './uploads')
