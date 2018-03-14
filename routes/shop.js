@@ -99,7 +99,7 @@ router.get('/getInfo', function(req, res, next) {
         message: message
       });
     } else {
-      return res.status(400).json(book);
+      return res.status(200).json(book);
     }
   });
 });
