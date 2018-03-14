@@ -4,11 +4,12 @@ var multer = require('multer');
 var crypto = require('crypto');
 var path = require('path');
 var isbn = require('node-isbn');
+var quagga = require('quagga').default;
 
 var imageToTextDecoder = require('image-to-text');
 
- var key = '2SrmhTT5yQ8VnnOeZiNdQw'; //Your key registered from cloudsightapi @ https://cloudsightapi.com
- imageToTextDecoder.setAuth(key);
+var key = '2SrmhTT5yQ8VnnOeZiNdQw'; //Your key registered from cloudsightapi @ https://cloudsightapi.com
+imageToTextDecoder.setAuth(key);
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -127,30 +128,20 @@ router.post('/getInfo', upload.single('barcode'), function(req, res, next) {
       name: req.file.filename,
       path: './uploads/'
     };
-    imageToTextDecoder.getKeywordsForImage(file).then(function(keywords, error) {
-      if(error) {
-        res.status(400).json({
-          message: "File Parsing Error"
-        });
-      } else {
-        console.log(keywords);
-        keywords.trim();
-        words = keywords.split(" ");
-        var index = words.indexOf("barcode");
-        var isbn_string = "";
-        console.log(words);
-        for (i = 0; i < words.length; i++) {
-          if (!isNaN(words[i]) && words[i].length != 0) {
-            isbn_string = words[i]
-            break;
-          }
-        }
-        if(isbn_string.lenght == 0) {
-          res.status(400).json({
-            message: "Invalid ISBN"
-          });
-        }
-        console.log(isbn_string);
+    var isbn_string = "";
+    quagga.decodeSingle({
+      src: './uploads/' + req.file.filename,
+      numOfWorkers: 0,  // Needs to be 0 when used within node
+      inputStream: {
+        size: 1920  // restrict input-size to be 800px in width (long-side)
+      },
+      decoder: {
+        readers: ["ean_reader"] // List of active readers
+      },
+    }, function(result) {
+      if(result.codeResult) {
+        isbn_string = result.codeResult.code;
+        console.log("result", result.codeResult.code);
         isbn.resolve(isbn_string, function(err, book) {
           if(err) {
             console.log()
@@ -159,9 +150,11 @@ router.post('/getInfo', upload.single('barcode'), function(req, res, next) {
               message: message
             });
           } else {
-            return res.status(400).json(book);
+            return res.status(200).json(book);
           }
         });
+      } else {
+        console.log("not detected");
       }
     });
   }
