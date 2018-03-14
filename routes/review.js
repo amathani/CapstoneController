@@ -22,7 +22,7 @@ router.post('/', function(req, res, next) {
   console.log(post);
 
   var sql = "INSERT INTO `book` (`username`, `reviewername`, `rating`, `comment`) VALUES ('"
-  + post.username + "','" + "1" + "','" + post.reviewername + "','" + post.rating + "','" + post.comment + "')";
+  + post.username + "','" + post.reviewername + "','" + post.rating + "','" + post.comment + "')";
   console.log(sql);
 
   var result = db.query(sql, function(err, result) {
