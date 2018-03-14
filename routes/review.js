@@ -21,7 +21,7 @@ router.post('/', function(req, res, next) {
   var post = req.body;
   console.log(post);
 
-  var sql = "INSERT INTO `book` (`username`, `reviewername`, `rating`, `comment`) VALUES ('"
+  var sql = "INSERT INTO `user_review` (`username`, `reviewername`, `rating`, `comment`) VALUES ('"
   + post.username + "','" + post.reviewername + "','" + post.rating + "','" + post.comment + "')";
   console.log(sql);
 
