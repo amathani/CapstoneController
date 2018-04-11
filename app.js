@@ -2,13 +2,13 @@ var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
-var cookieParser = require('cookie-parser');
 var busboy = require('express-busboy');
 
 var routes = require('./routes');
 var http = require('http');
 var path = require('path');
 var session = require('express-session');
+var sqlString = require('sqlstring');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
@@ -53,15 +53,15 @@ busboy.extend(app, {
     path: '/uploads',
     allowedPath: /./
 });
-app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 console.log(path.join(__dirname + '/uploads'));
 app.use('/images', express.static(path.join(__dirname + '/uploads')));
 app.use(session({
   secret: 'keyboard cat',
   resave: false,
+  rolling: true,
   saveUninitialized: true,
-  cookie: { maxAge: 60000 }
+  cookie: { maxAge: 30*60000 }
 }));
 
 app.use('/', index);

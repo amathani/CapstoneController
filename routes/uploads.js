@@ -74,9 +74,9 @@ router.post('/product', upload.array('images'), function(req, res, next) {
     console.log(post);
     if(!post.book_id) {
       var sql = "INSERT INTO `book` (`username`, `uni_id`, `price`, `description`, `preferred_payment_method`, `title`, `author`, `isbn`, `image_paths`) VALUES ('"
-      + post.username + "','" + "1" + "','" + post.price + "','" + post.desc + "','" + post.payment
-      + "','" + post.title + "','" + post.author + "','"
-      + post.isbn + "','" + image_paths + "')";
+      + sqlString.escape(post.username) + "','" + "1" + "','" + sqlString.escape(post.price) + "','" + sqlString.escape(post.desc) + "','" + sqlString.escape(post.payment)
+      + "','" + sqlString.escape(post.title) + "','" + sqlString.escape(post.author) + "','"
+      + sqlString.escape(post.isbn) + "','" + image_paths + "')";
       console.log(sql);
 
       var result = db.query(sql, function(err, result) {
