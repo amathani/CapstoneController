@@ -5,6 +5,7 @@ var crypto = require('crypto');
 var path = require('path');
 var isbn = require('node-isbn');
 var quagga = require('quagga').default;
+var sqlString = require('sqlstring');
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
