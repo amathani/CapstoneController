@@ -18,9 +18,16 @@ router.post('/signup', function(req, res, next) {
   var email    = post.email;
   var umail    = post.umail;
   var uni_id   = 1;
-  var sql      = "INSERT INTO `user`(`username`,`password`,`fullname`,`email`, `umail`, `uni_id`) VALUES ("
-  + functions.escape(username) + "," + functions.escape(password) + "," + functions.escape(fullname)
-  + "," + functions.escape(email) + "," + functions.escape(umail) + "," + functions.escape(uni_id) + ")";
+  var sql = "";
+  try {
+    sql      = "INSERT INTO `user`(`username`,`password`,`fullname`,`email`, `umail`, `uni_id`) VALUES ("
+    + functions.escape(username) + "," + functions.escape(password) + "," + functions.escape(fullname)
+    + "," + functions.escape(email) + "," + functions.escape(umail) + "," + functions.escape(uni_id) + ")";
+  } catch(error) {
+    return res.status(440).json({
+      message: error
+    });
+  }
   console.log(sql)
   var query    = db.query(sql, function(err, result) {
     if(err) {
@@ -28,7 +35,7 @@ router.post('/signup', function(req, res, next) {
       res.status
     }
     message    = "Your account has been created.";
-    res.status(200).json({
+    return res.status(200).json({
       "message:" : message
     });
   });
@@ -40,9 +47,15 @@ router.post('/login', function(req, res, next) {
   console.log(post);
   var username = post.username;
   var password = post.password;
-
-  var sql = "Select username FROM `user` WHERE `username` = " + functions.escape(username, res)
-  + " and `password` = " + functions.escape(password, res) + "";
+  var sql = "";
+  try {
+    var sql = "Select username FROM `user` WHERE `username` = " + functions.escape(username)
+    + " and `password` = " + functions.escape(password) + "";
+  } catch(error) {
+    return res.status(440).json({
+      message: error
+    });
+  }
   console.log(sql);
   db.query(sql, function(err, results) {
     if(results.length == 1) {
@@ -50,13 +63,13 @@ router.post('/login', function(req, res, next) {
       console.log(req.session.username);
       message = "successful";
       console.log(message);
-      res.status(200).json({
+      return res.status(200).json({
         "User" : req.session.username,
         "message" : message
       });
     } else {
       message = "failed";
-      res.status(400).json({
+      return res.status(400).json({
         "user" : username,
         "message" : message
       });
@@ -72,8 +85,22 @@ router.post('/profile', function(req, res, next) {
 
 router.get('/profile', function(req, res, next) {
   var get = req.query;
-  username = functions.getUserName(get.username, req.session.username);
-  var sql      = "SELECT username, fullname, email, umail, image_names FROM `user` WHERE username = '" + username + "'";
+  var username = "";
+  try {
+    username = functions.getUserName(get.username, req.session.username);
+  } catch(error) {
+    return res.status(440).json({
+      message: error
+    });
+  }
+  var sql = "";
+  try {
+    sql      = "SELECT username, fullname, email, umail, image_names FROM `user` WHERE username = " + functions.escape(username);
+  } catch(error) {
+    return res.status(440).json({
+      message: error
+    });
+  }
   console.log(sql)
   var query    = db.query(sql, function(err, result) {
     if(err) {
@@ -86,7 +113,15 @@ router.get('/profile', function(req, res, next) {
 
 router.get('/listings', function(req, res, next) {
   var get = req.query;
-  var username = functions.getUserName(get.username, req.session.username);
+  var username = "";
+  try {
+    username = functions.getUserName(get.username, req.session.username);
+  } catch(error) {
+    return res.status(440).json({
+      message: error
+    });
+  }
+
   var sql      = "SELECT * FROM `book` WHERE username = '" + username + "'";
   console.log(sql)
   var query    = db.query(sql, function(err, result) {

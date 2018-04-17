@@ -4,10 +4,22 @@ var functions = require('./functions');
 /* GET home page. */
 router.post('/ask', function(req, res, next) {
   var post = req.body;
-  var username = functions.getUserName(post.asker_username, req.session.username, res);
-  var sql = "INSERT into `faqs` (`asker_username`, `owner_username`, `question`, `product_id`" +
-  ") VALUES (" + functions.escape(username, res) + "," + functions.escape(post.owner_usernames, res)
-  + "," + functions.escape(post.question, res) + "," + functions.escape(post.product_id, res) + ")";
+  try {
+    var username = functions.getUserName(post.asker_username, req.session.username, res);
+  } catch (error) {
+    return res.status(440).json({
+      message: error
+    });
+  }
+  try {
+    var sql = "INSERT into `faqs` (`asker_username`, `owner_username`, `question`, `product_id`" +
+    ") VALUES (" + functions.escape(username) + "," + functions.escape(post.owner_usernames)
+    + "," + functions.escape(post.question) + "," + functions.escape(post.product_id) + ")";
+  } catch(error) {
+    return res.status(440).json({
+      message: error
+    });
+  }
   console.log(sql);
 
   var result = db.query(sql, function(err, result) {
@@ -50,6 +62,7 @@ router.post('/answer', function(req, res, next) {
     }
   });
 });
+
 router.get('/retrieve', function(req, res, next) {
   var get = req.query;
   if(get.product_id) {

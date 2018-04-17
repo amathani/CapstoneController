@@ -21,11 +21,18 @@ router.get('/locations', function(req, res, next) {
 router.post('/create/request', function(req, res, next) {
   var post = req.body;
   console.log(post);
-  username = functions.getUserName(post.username_buyer, req.session.username);
+  var username = "";
+  try {
+    username = functions.getUserName(post.username_buyer, req.session.username);
+  } catch (error) {
+    return res.status(440).json({
+      message: error
+    });
+  }
   var sql = "INSERT INTO `meetups` (`username_seller`, `username_buyer`, `date`, `comments`, `product_id`, `longitude`, `latitude`) VALUES ("
-  + fucntions.escape(post.username_seller, res) + "," + fucntions.escape(username, res) + "," + fucntions.escape(post.date, res)
-  + "," + fucntions.escape(post.comments, res) + "," + fucntions.escape(post.product_id, res)
-  + "," + fucntions.escape(post.longitude, res) + "," + fucntions.escape(post.latitude, res) + ")";
+  + fucntions.escape(post.username_seller) + "," + fucntions.escape(username) + "," + fucntions.escape(post.date)
+  + "," + fucntions.escape(post.comments) + "," + fucntions.escape(post.product_id)
+  + "," + fucntions.escape(post.longitude) + "," + fucntions.escape(post.latitude) + ")";
   console.log(sql);
 
   var result = db.query(sql, function(err, result) {
@@ -100,7 +107,16 @@ router.post('/requests', function(req, res, next) {
 
 router.get('/requests', function(req, res, next) {
   var get = req.query;
-  username = functions.getUserName(get.username_buyer, req.session.username);
+
+  var username = "";
+  try {
+    username = functions.getUserName(post.username_buyer, req.session.username);
+  } catch (error) {
+    return res.status(440).json({
+      message: error
+    });
+  }
+
   console.log(get);
   if (get.meetup_id) {
     var sql = "SELECT `meetup_id`, `username_seller`, `username_buyer`, `seller_ready`, `buyer_ready`, `date`, `accepted`, `comments`, `pending`, `product_id`," +

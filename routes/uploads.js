@@ -23,9 +23,15 @@ var storage = multer.diskStorage({
 var upload = multer({ storage: storage })
 router.post('/profile', upload.single('avatar'), function(req, res, next) {
   var body = req.body;
-
+  var username = "";
   console.log(req.file);
-  username = functions.getUserName(body.username, req.session.username, res);
+  try {
+    username = functions.getUserName(body.username, req.session.username);
+  } catch (error) {
+    return res.status(440).json({
+      message: error
+    });
+  }
   // username = body.username;
   if(!req.file) {
     console.log("No File Received");
@@ -57,7 +63,14 @@ router.post('/profile', upload.single('avatar'), function(req, res, next) {
 router.post('/product', upload.array('images'), function(req, res, next) {
 
   var post = req.body;
-  username = functions.getUserName(post.username, req.session.username, res);
+  var username = "";
+  try {
+    username = functions.getUserName(post.username, req.session.username, );
+  } catch (error) {
+    return res.status(440).json({
+      message: error
+    });
+  }
 
   if(!req.files) {
     console.log("No File Received");
@@ -78,11 +91,18 @@ router.post('/product', upload.array('images'), function(req, res, next) {
     //Process the product
     console.log(post);
     if(!post.book_id) {
-      var sql = "INSERT INTO `book` (`username`, `uni_id`, `price`, `description`, `preferred_payment_method`, `title`, `author`, `isbn`, `image_paths`) VALUES ("
-      + functions.escape(username, res) + "," + "1" + "," + functions.escape(post.price, res)
-      + "," + functions.escape(post.desc, res) + "," + functions.escape(post.payment, res)
-      + "," + functions.escape(post.title, res) + "," + functions.escape(post.author, res)
-      + "," + functions.escape(post.isbn, res) + ",'" + image_paths + "')";
+      var sql = "";
+      try {
+        sql = "INSERT INTO `book` (`username`, `uni_id`, `price`, `description`, `preferred_payment_method`, `title`, `author`, `isbn`, `image_paths`) VALUES ("
+        + functions.escape(username, res) + "," + "1" + "," + functions.escape(post.price, res)
+        + "," + functions.escape(post.desc, res) + "," + functions.escape(post.payment, res)
+        + "," + functions.escape(post.title, res) + "," + functions.escape(post.author, res)
+        + "," + functions.escape(post.isbn, res) + ",'" + image_paths + "')";
+      } catch (error) {
+        return res.status(440).json({
+          message: error
+        });
+      }
       console.log(sql);
 
       var result = db.query(sql, function(err, result) {
@@ -95,7 +115,17 @@ router.post('/product', upload.array('images'), function(req, res, next) {
         }
       });
     } else {
-      var sql = "UPDATE `book` SET `image_paths`='" + image_paths + "' WHERE `book_id`=" + functions.escape(post.book_id, res) + "";
+      var sql = "";
+      try {
+        return res.status(440).json({
+          message: error
+        });
+      } catch (error) {
+        return res.status(440).json({
+          message: error
+        });
+      }
+        sql = "UPDATE `book` SET `image_paths`='" + image_paths + "' WHERE `book_id`=" + functions.escape(post.book_id, res) + "";
       console.log(sql);
       var result = db.query(sql, function(err, result) {
         if(err) {

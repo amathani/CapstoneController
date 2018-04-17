@@ -66,12 +66,25 @@ router.get('/books', function(req, res, next) {
 
 router.post('/books/list', function(req, res, next) {
   var post = req.body;
-  username = functions.getUserName(post.username, req.session.username);
-  var sql = "INSERT INTO `book` (`username`, `uni_id`, `price`, `description`, `preferred_payment_method`, `title`, `author`, `isbn`) VALUES ("
-  + functions.escape(username, res) + ",'" + "1" + "'," + functions.escape(post.price, res) + ","
-  + functions.escape(post.desc, res) + "," + functions.escape(post.payment, res)
-  + "," + functions.escape(post.title, res) + "," + functions.escape(post.author, res) + ","
-  + functions.escape(post.isbn, res) + ")";
+  var username = "";
+  try {
+    username = functions.getUserName(post.username, req.session.username);
+  } catch (error) {
+    return res.status(440).json({
+      message: error
+    });
+  }
+  try {
+    var sql = "INSERT INTO `book` (`username`, `uni_id`, `price`, `description`, `preferred_payment_method`, `title`, `author`, `isbn`) VALUES ("
+    + functions.escape(username) + ",'" + "1" + "'," + functions.escape(post.price) + ","
+    + functions.escape(post.desc) + "," + functions.escape(post.payment)
+    + "," + functions.escape(post.title) + "," + functions.escape(post.author) + ","
+    + functions.escape(post.isbn) + ")";
+  } catch (error) {
+    return res.status(400).json({
+      message: error
+    });
+  }
   console.log(sql);
 
   var result = db.query(sql, function(err, result) {
@@ -157,7 +170,13 @@ router.get('/products', function(req, res, next) {
 router.post('/products/list', function(req, res, next) {
   var post = req.body;
   console.log(post);
-  username = functions.getUserName(post.username, req.session.username);
+  try {
+    username = functions.getUserName(post.username, req.session.username);
+  } catch (error) {
+    return res.status(440).json({
+      message: error
+    });
+  }
   var sql = "INSERT INTO `product` (`username`, `uni_id`, `price`, `description`, `preferred_payment_method`, `product_photo_id`) VALUES ("
   + username + ",'" + "1" + "'," + post.price + "," + post.desc + "," + post.payment + ",'"
   + "1" + "')";
