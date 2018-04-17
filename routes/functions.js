@@ -18,5 +18,6 @@ module.exports = {
         message: message
       });
     }
+    return sqlString.escape(input);
   }
 };

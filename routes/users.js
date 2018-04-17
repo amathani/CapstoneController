@@ -37,12 +37,13 @@ router.post('/signup', function(req, res, next) {
 router.post('/login', function(req, res, next) {
   message        = '';
   var post = req.body;
+  console.log(post);
   var username = post.username;
   var password = post.password;
 
   var sql = "Select username FROM `user` WHERE `username` = " + functions.escape(username, res)
-  + "' and `password` = " + functions.escape(password, res) + "";
-  console.log(query);
+  + " and `password` = " + functions.escape(password, res) + "";
+  console.log(sql);
   db.query(sql, function(err, results) {
     if(results.length == 1) {
       req.session.username = results[0].username;
