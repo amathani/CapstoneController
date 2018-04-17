@@ -7,7 +7,7 @@ router.get('/books', function(req, res, next) {
   var get = req.query;
   console.log(get);
   if (get.book_id) {
-    var sql = "Select * FROM `book` where `book_id` = '" + functions.escape(get.book_id, res) + "'";
+    var sql = "Select * FROM `book` where `book_id` = " + functions.escape(get.book_id, res) + "";
     console.log(sql);
     var result    = db.query(sql, function(err, result) {
       if(err) {
@@ -153,7 +153,7 @@ router.get('/products', function(req, res, next) {
   }
 });
 
-// Depricated 
+// Depricated
 router.post('/products/list', function(req, res, next) {
   var post = req.body;
   console.log(post);
