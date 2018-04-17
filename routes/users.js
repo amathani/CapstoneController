@@ -86,7 +86,8 @@ router.get('/profile', function(req, res, next) {
 
 router.get('/listings', function(req, res, next) {
   var get = req.query;
-  var sql      = "SELECT * FROM `book` WHERE username = '" + get.username + "'";
+  var username = functions.getUserName(get.username, req.session.username);
+  var sql      = "SELECT * FROM `book` WHERE username = '" + username + "'";
   console.log(sql)
   var query    = db.query(sql, function(err, result) {
     if(err) {
