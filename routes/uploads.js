@@ -6,6 +6,7 @@ var path = require('path');
 var isbn = require('node-isbn');
 var quagga = require('quagga').default;
 var sqlString = require('sqlstring');
+var functions = require('./functions');
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -21,28 +22,28 @@ var storage = multer.diskStorage({
 
 var upload = multer({ storage: storage })
 router.post('/profile', upload.single('avatar'), function(req, res, next) {
-  console.log(req.body);
-  console.log(req.file);
+
+  var body = req.body;
+  username = functions.getUserName(body.username, req.session.username, res);
   if(!req.file) {
     console.log("No File Received");
-    message = "No File Received";
+    var message = "No File Received";
     return res.status(400).json({
       message: message
     });
   } else {
     console.log('file received');
-    message = "file received"
-    var body = req.body;
-    var sql = "UPDATE `user` SET `image_names`='" + req.file.filename + "' WHERE `username`='" + body.username + "'";
+    message = "image-updated";
+    var sql = "UPDATE `user` SET `image_names`='" + req.file.filename + "' WHERE `username`='" + username + "'";
     console.log(sql);
 
     var result = db.query(sql, function(err, result) {
       if(err) {
-        console.log(err)
+        console.log(err);
         message = "Invalid request made";
-        res.status(400).json({
+        return res.status(400).json({
           "message" : message
-        })
+        });
       }
     });
     return res.status(200).json({
@@ -52,8 +53,10 @@ router.post('/profile', upload.single('avatar'), function(req, res, next) {
 });
 
 router.post('/product', upload.array('images'), function(req, res, next) {
-  console.log(req.body);
-  console.log(req.files);
+
+  var post = req.body;
+  username = functions.getUserName(post.username, req.session.username, res);
+
   if(!req.files) {
     console.log("No File Received");
     message = "No File Received";
@@ -71,13 +74,13 @@ router.post('/product', upload.array('images'), function(req, res, next) {
     message = "file received";
 
     //Process the product
-    var post = req.body;
     console.log(post);
     if(!post.book_id) {
       var sql = "INSERT INTO `book` (`username`, `uni_id`, `price`, `description`, `preferred_payment_method`, `title`, `author`, `isbn`, `image_paths`) VALUES ("
-      + sqlString.escape(post.username) + "," + "1" + "," + sqlString.escape(post.price) + "," + sqlString.escape(post.desc) + "," + sqlString.escape(post.payment)
-      + "," + sqlString.escape(post.title) + "," + sqlString.escape(post.author) + ","
-      + sqlString.escape(post.isbn) + ",'" + image_paths + "')";
+      + functions.escape(username, res) + "," + "1" + "," + functions.escape(post.price, res)
+      + "," + functions.escape(post.desc, res) + "," + functions.escape(post.payment, res)
+      + "," + functions.escape(post.title, res) + "," + functions.escape(post.author, res)
+      + "," + functions.escape(post.isbn, res) + ",'" + image_paths + "')";
       console.log(sql);
 
       var result = db.query(sql, function(err, result) {
@@ -90,7 +93,7 @@ router.post('/product', upload.array('images'), function(req, res, next) {
         }
       });
     } else {
-      var sql = "UPDATE `book` SET `image_paths`='" + image_paths + "' WHERE `book_id`='" + post.book_id + "'";
+      var sql = "UPDATE `book` SET `image_paths`='" + image_paths + "' WHERE `book_id`=" + functions.escape(post.book_id, res) + "";
       console.log(sql);
       var result = db.query(sql, function(err, result) {
         if(err) {
@@ -109,8 +112,6 @@ router.post('/product', upload.array('images'), function(req, res, next) {
 });
 
 router.post('/getInfo', upload.single('barcode'), function(req, res, next) {
-  console.log(req.body);
-  console.log(req.file);
   if(!req.file) {
     console.log("No File Received");
     message = "No File Received";

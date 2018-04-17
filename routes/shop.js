@@ -1,12 +1,13 @@
 var express = require('express');
 var router = express.Router();
 var isbn = require('node-isbn');
+var functions = require('./functions');
 
 router.get('/books', function(req, res, next) {
   var get = req.query;
   console.log(get);
   if (get.book_id) {
-    var sql = "Select * FROM `book` where `book_id` = '" + get.book_id + "'";
+    var sql = "Select * FROM `book` where `book_id` = '" + functions.escape(get.book_id, res) + "'";
     console.log(sql);
     var result    = db.query(sql, function(err, result) {
       if(err) {
@@ -65,12 +66,12 @@ router.get('/books', function(req, res, next) {
 
 router.post('/books/list', function(req, res, next) {
   var post = req.body;
-  console.log(post);
-
-  var sql = "INSERT INTO `book` (`username`, `uni_id`, `price`, `description`, `preferred_payment_method`, `title`, `author`, `isbn`) VALUES ('"
-  + post.username + "','" + "1" + "','" + post.price + "','" + post.desc + "','" + post.payment
-  + "','" + post.title + "','" + post.author + "','"
-  + post.isbn + "')";
+  username = functions.getUserName(post.username, req.session.username);
+  var sql = "INSERT INTO `book` (`username`, `uni_id`, `price`, `description`, `preferred_payment_method`, `title`, `author`, `isbn`) VALUES ("
+  + functions.escape(username, res) + ",'" + "1" + "'," + functions.escape(post.price, res) + ","
+  + functions.escape(post.desc, res) + "," + functions.escape(post.payment, res)
+  + "," + functions.escape(post.title, res) + "," + functions.escape(post.author, res) + ","
+  + functions.escape(post.isbn, res) + ")";
   console.log(sql);
 
   var result = db.query(sql, function(err, result) {
@@ -152,11 +153,13 @@ router.get('/products', function(req, res, next) {
   }
 });
 
+// Depricated 
 router.post('/products/list', function(req, res, next) {
   var post = req.body;
   console.log(post);
-
-  var sql = "INSERT INTO `product` (`username`, `uni_id`, `price`, `description`, `preferred_payment_method`, `product_photo_id`) VALUES ('" + post.username + "','" + "1" + "','" + post.price + "','" + post.desc + "','" + post.payment + "','"
+  username = functions.getUserName(post.username, req.session.username);
+  var sql = "INSERT INTO `product` (`username`, `uni_id`, `price`, `description`, `preferred_payment_method`, `product_photo_id`) VALUES ("
+  + username + ",'" + "1" + "'," + post.price + "," + post.desc + "," + post.payment + ",'"
   + "1" + "')";
   console.log(sql);
 

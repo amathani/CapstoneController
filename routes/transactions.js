@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var functions = require('./functions');
 
 router.get('/locations', function(req, res, next) {
   var get = req.query;
@@ -20,9 +21,11 @@ router.get('/locations', function(req, res, next) {
 router.post('/create/request', function(req, res, next) {
   var post = req.body;
   console.log(post);
-
-  var sql = "INSERT INTO `meetups` (`username_seller`, `username_buyer`, `date`, `comments`, `product_id`, `longitude`, `latitude`) VALUES ('" + post.username_seller +
-  "','" + post.username_buyer + "','" + post.date + "','" + post.comments + "','" + post.product_id + "','" + post.longitude + "','" + post.latitude + "')";
+  username = functions.getUserName(post.username_buyer, req.session.username);
+  var sql = "INSERT INTO `meetups` (`username_seller`, `username_buyer`, `date`, `comments`, `product_id`, `longitude`, `latitude`) VALUES ("
+  + fucntions.escape(post.username_seller, res) + "," + fucntions.escape(username, res) + "," + fucntions.escape(post.date, res)
+  + "," + fucntions.escape(post.comments, res) + "," + fucntions.escape(post.product_id, res)
+  + "," + fucntions.escape(post.longitude, res) + "," + fucntions.escape(post.latitude, res) + ")";
   console.log(sql);
 
   var result = db.query(sql, function(err, result) {
@@ -97,6 +100,7 @@ router.post('/requests', function(req, res, next) {
 
 router.get('/requests', function(req, res, next) {
   var get = req.query;
+  username = functions.getUserName(get.username_buyer, req.session.username);
   console.log(get);
   if (get.meetup_id) {
     var sql = "SELECT `meetup_id`, `username_seller`, `username_buyer`, `seller_ready`, `buyer_ready`, `date`, `accepted`, `comments`, `pending`, `product_id`," +
@@ -124,9 +128,9 @@ router.get('/requests', function(req, res, next) {
 
       res.status(200).json(result);
     });
-  } else if (get.username_buyer) {
+  } else if(get.book_id) {
     var sql = "SELECT meetup_id, username_seller, username_buyer, seller_ready, buyer_ready, date, accepted, comments, pending, product_id," +
-     " `longitude`, `latitude`, `title` FROM `meetups`, `book` WHERE book.book_id = meetups.product_id and meetups.username_buyer = '" + get.username_buyer + "'";
+     " `longitude`, `latitude`, `title` FROM `meetups`, `book` WHERE book.book_id = meetups.product_id and meetups.product_id = '" + get.book_id + "'";
     console.log(sql);
     var result    = db.query(sql, function(err, result) {
       if(err) {
@@ -138,9 +142,9 @@ router.get('/requests', function(req, res, next) {
       }
       res.status(200).json(result);
     });
-  } else if(get.book_id) {
+  } else if (username) {
     var sql = "SELECT meetup_id, username_seller, username_buyer, seller_ready, buyer_ready, date, accepted, comments, pending, product_id," +
-     " `longitude`, `latitude`, `title` FROM `meetups`, `book` WHERE book.book_id = meetups.product_id and meetups.product_id = '" + get.book_id + "'";
+     " `longitude`, `latitude`, `title` FROM `meetups`, `book` WHERE book.book_id = meetups.product_id and meetups.username_buyer = '" + get.username_buyer + "'";
     console.log(sql);
     var result    = db.query(sql, function(err, result) {
       if(err) {

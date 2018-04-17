@@ -1,12 +1,13 @@
 var express = require('express');
 var router = express.Router();
-
+var functions = require('./functions');
 /* GET home page. */
 router.post('/ask', function(req, res, next) {
   var post = req.body;
-  console.log(post);
+  var username = functions.getUserName(post.asker_username, req.session.username, res);
   var sql = "INSERT into `faqs` (`asker_username`, `owner_username`, `question`, `product_id`" +
-  ") VALUES ('" + post.asker_usernames + "','" + post.owner_usernames + "','" + post.question + "','" + post.product_id + "')";
+  ") VALUES (" + functions.escape(username, res) + "," + functions.escape(post.owner_usernames, res)
+  + "," + functions.escape(post.question, res) + "," + functions.escape(post.product_id, res) + ")";
   console.log(sql);
 
   var result = db.query(sql, function(err, result) {
@@ -28,7 +29,9 @@ router.post('/ask', function(req, res, next) {
 
 router.post('/answer', function(req, res, next) {
   var post = req.body;
-  var sql = "UPDATE `faqs` SET `answer` = '" + post.answer + "' WHERE `faq_id` = '" + post.faq_id + "'";
+  // var username = functions.getUserName(post.username, req.session.username);
+  var sql = "UPDATE `faqs` SET `answer` = " + functions.escape(post.answer, res)
+  + " WHERE `faq_id` = " + functions.escape(post.faq_id, res);
   console.log(sql);
 
   var result = db.query(sql, function(err, result) {
@@ -56,13 +59,16 @@ router.get('/retrieve', function(req, res, next) {
     var result    = db.query(sql, function(err, result) {
       if(err) {
         console.log("ERROR\n" + err);
-        res.status(400);
+        message = "Invalid request";
+        res.status(400).json({
+          "message" : message
+        });
       } else {
         res.status(200).json(result);
       }
     });
   } else {
-    message = "Invalid GET request";
+    message = "Invalid request";
     res.status(400).json({
       "message" : message
     });
