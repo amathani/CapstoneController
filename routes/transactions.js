@@ -144,7 +144,7 @@ router.get('/requests', function(req, res, next) {
     });
   } else if (username) {
     var sql = "SELECT meetup_id, username_seller, username_buyer, seller_ready, buyer_ready, date, accepted, comments, pending, product_id," +
-     " `longitude`, `latitude`, `title` FROM `meetups`, `book` WHERE book.book_id = meetups.product_id and meetups.username_buyer = '" + get.username_buyer + "'";
+     " `longitude`, `latitude`, `title` FROM `meetups`, `book` WHERE book.book_id = meetups.product_id and meetups.username_buyer = '" + username + "'";
     console.log(sql);
     var result    = db.query(sql, function(err, result) {
       if(err) {
