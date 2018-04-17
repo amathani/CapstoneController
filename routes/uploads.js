@@ -22,9 +22,11 @@ var storage = multer.diskStorage({
 
 var upload = multer({ storage: storage })
 router.post('/profile', upload.single('avatar'), function(req, res, next) {
-
   var body = req.body;
+
+  console.log(req.file);
   username = functions.getUserName(body.username, req.session.username, res);
+  // username = body.username;
   if(!req.file) {
     console.log("No File Received");
     var message = "No File Received";

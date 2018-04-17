@@ -46,6 +46,15 @@ app.use(function(req, res, next) {
   next();
 });
 
+
+app.use(session({
+  secret: 'keyboard cat',
+  resave: false,
+  rolling: true,
+  saveUninitialized: true,
+  cookie: { maxAge: 30*60000 }
+}));
+
 //for file uploading
 app.use('/uploads', uploads);
 
@@ -58,13 +67,6 @@ busboy.extend(app, {
 app.use(express.static(path.join(__dirname, 'public')));
 console.log(path.join(__dirname + '/uploads'));
 app.use('/images', express.static(path.join(__dirname + '/uploads')));
-app.use(session({
-  secret: 'keyboard cat',
-  resave: false,
-  rolling: true,
-  saveUninitialized: true,
-  cookie: { maxAge: 30*60000 }
-}));
 
 app.use('/', index);
 app.use('/users', users);
