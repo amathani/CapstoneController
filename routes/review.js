@@ -5,7 +5,7 @@ var functions = require('./functions');
 router.get('/', function(req, res, next) {
   var get = req.query;
   try {
-    username = functions.getUserName(post.username, req.session.username);
+    username = functions.getUserName(get.username, req.session.username);
   } catch (error) {
     return res.status(440).json({
       message: error
