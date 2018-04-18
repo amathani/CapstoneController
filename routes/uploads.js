@@ -5,8 +5,10 @@ var crypto = require('crypto');
 var path = require('path');
 var isbn = require('node-isbn');
 var quagga = require('quagga').default;
-var sqlString = require('sqlstring');
+const icecat = require('icecat');
 var functions = require('./functions');
+
+const icecatClient = new icecat('projectulist', 'projectUlist@2017');
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -184,6 +186,52 @@ router.post('/getInfo', upload.single('barcode'), function(req, res, next) {
         });
       } else {
         console.log("not detected");
+      }
+    });
+  }
+});
+
+router.post('/getProductInfo', upload.single('barcode'), function(req, res, next) {
+  if(!req.file) {
+    console.log("No File Received");
+    message = "No File Received";
+    return res.status(400).json({
+      message: message
+    });
+  } else {
+    console.log('file received');
+    message = "file received";
+    var file = {
+      name: req.file.filename,
+      path: './uploads/'
+    };
+    var isbn_string = "";
+    quagga.decodeSingle({
+      src: './uploads/' + req.file.filename,
+      numOfWorkers: 0,  // Needs to be 0 when used within node
+      inputStream: {
+        size: 1920  // restrict input-size to be 800px in width (long-side)
+      },
+      decoder: {
+        readers: ["ean_reader"] // List of active readers
+      },
+    }, function(result) {
+      if(result.codeResult) {
+        var barcode = result.codeResult.code;
+        console.log(barcode);
+        icecatClient.openCatalog.getProduct('EN', barcode).then(function(product) {
+          console.log('Description: ' + product.getLongDescription());
+          return res.status(200).json(product.getLongDescription());
+        }).catch(function(reason) {
+          console.error('Error or timeout', reason);
+          return res.status(400);
+        });;
+      } else {
+        console.log("not detected");
+        message = "No Product Information";
+        return res.status(400).json({
+          message: message
+        });
       }
     });
   }
