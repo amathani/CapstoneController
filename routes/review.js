@@ -33,7 +33,7 @@ router.post('/', function(req, res, next) {
   }
   try {
     var sql = "INSERT INTO `user_review` (`username`, `reviewername`, `rating`, `comment`) VALUES ("
-    + functions.escape(username) + ",'" + functions.escape(post.reviewername)
+    + functions.escape(username) + "," + functions.escape(post.reviewername)
     + "," + functions.escape(post.rating) + "," + functions.escape(post.comment) + ")";
   } catch (error) {
     return res.status(440).json({
