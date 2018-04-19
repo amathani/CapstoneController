@@ -110,7 +110,7 @@ router.get('/requests', function(req, res, next) {
 
   var username = "";
   try {
-    username = functions.getUserName(post.username_buyer, req.session.username);
+    username = functions.getUserName(get.username_buyer, req.session.username);
   } catch (error) {
     return res.status(440).json({
       message: error
