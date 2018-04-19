@@ -30,9 +30,9 @@ router.post('/create/request', function(req, res, next) {
     });
   }
   var sql = "INSERT INTO `meetups` (`username_seller`, `username_buyer`, `date`, `comments`, `product_id`, `longitude`, `latitude`) VALUES ("
-  + fucntions.escape(post.username_seller) + "," + fucntions.escape(username) + "," + fucntions.escape(post.date)
-  + "," + fucntions.escape(post.comments) + "," + fucntions.escape(post.product_id)
-  + "," + fucntions.escape(post.longitude) + "," + fucntions.escape(post.latitude) + ")";
+  + functions.escape(post.username_seller) + "," + functions.escape(username) + "," + functions.escape(post.date)
+  + "," + functions.escape(post.comments) + "," + functions.escape(post.product_id)
+  + "," + functions.escape(post.longitude) + "," + functions.escape(post.latitude) + ")";
   console.log(sql);
 
   var result = db.query(sql, function(err, result) {
