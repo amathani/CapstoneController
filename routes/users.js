@@ -18,11 +18,14 @@ router.post('/signup', function(req, res, next) {
   var email    = post.email;
   var umail    = post.umail;
   var uni_id   = 1;
+  var verification_id = Math.floor((Math.random() * 100000) + 54);
+  verification_id = functions.checkId(verification_id, db);
+
   var sql = "";
   try {
-    sql      = "INSERT INTO `user`(`username`,`password`,`fullname`,`email`, `umail`, `uni_id`) VALUES ("
+    sql      = "INSERT INTO `user`(`username`,`password`,`fullname`,`email`, `umail`, `uni_id`, `verification_id`) VALUES ("
     + functions.escape(username) + "," + functions.escape(password) + "," + functions.escape(fullname)
-    + "," + functions.escape(email) + "," + functions.escape(umail) + "," + functions.escape(uni_id) + ")";
+    + "," + functions.escape(email) + "," + functions.escape(umail) + "," + functions.escape(uni_id) + "," + functions.escape(verification_id) + ")";
   } catch(error) {
     return res.status(440).json({
       message: error
@@ -31,10 +34,14 @@ router.post('/signup', function(req, res, next) {
   console.log(sql)
   var query    = db.query(sql, function(err, result) {
     if(err) {
-      console.log(err);
-      res.status
+      message = "Account Already Exists";
+      // console.log(err);
+      return res.status(400).json({
+        "message" : message
+      });
     }
     message    = "Your account has been created.";
+    functions.verifyAccount(verification_id, umail);
     return res.status(200).json({
       "message:" : message
     });
@@ -49,7 +56,7 @@ router.post('/login', function(req, res, next) {
   var password = post.password;
   var sql = "";
   try {
-    var sql = "Select username FROM `user` WHERE `username` = " + functions.escape(username)
+    var sql = "Select username, verified FROM `user` WHERE `username` = " + functions.escape(username)
     + " and `password` = " + functions.escape(password) + "";
   } catch(error) {
     return res.status(440).json({
@@ -59,6 +66,13 @@ router.post('/login', function(req, res, next) {
   console.log(sql);
   db.query(sql, function(err, results) {
     if(results.length == 1) {
+      if(results[0].verified == 0) {
+        message = "User Verification Required";
+        return res.status(400).json({
+          "user" : username,
+          "message" : message
+        });
+      }
       req.session.username = results[0].username;
       console.log(req.session.username);
       message = "successful";
@@ -127,15 +141,51 @@ router.get('/listings', function(req, res, next) {
   var query    = db.query(sql, function(err, result) {
     if(err) {
       console.log(err);
+      message = "Invalid Request";
+      // console.log(err);
+      return res.status(400).json({
+        "message" : message
+      });
     }
-    res.status(200).json(result);
+    return res.status(200).json(result);
   });
 });
 
 router.get('/logout', function(req, res, next) {
   console.log(req.session.username);
   req.session.destroy(function(err) {
-    res.status(200).json("Successfully Logged Out!")
+    res.status(200).json({
+      message: "Successfully Logged Out!"
+    });
+  });
+});
+router.get('/verifyUser', function(req, res) {
+  var get = req.query;
+  var sql = "";
+  try {
+    sql = "UPDATE `user` SET `verified` = '1' WHERE `verification_id` = "
+    + functions.escape(get.verification_id);
+  } catch (error) {
+    return res.status(400).json({
+      message: "Invalid verification request"
+    });
+  }
+
+  console.log(sql)
+  var query    = db.query(sql, function(err, result) {
+    if(err) {
+      console.log(err);
+      message = "Invalid Request";
+      // console.log(err);
+      return res.status(400).json({
+        "message" : message
+      });
+    }
+    message = "Validation Complete";
+    // console.log(err);
+    return res.status(400).json({
+      "message" : message
+    });
   });
 
 });
