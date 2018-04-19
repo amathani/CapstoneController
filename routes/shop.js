@@ -107,7 +107,6 @@ router.get('/getInfo', function(req, res, next) {
   }
   isbn.resolve(get.isbn, function(err, book) {
     if(err) {
-      console.log()
       message = "Invalid ISBN/Book not found";
       return res.status(400).json({
         message: message
@@ -128,6 +127,10 @@ router.get('/products', function(req, res, next) {
     var result    = db.query(sql, function(err, result) {
       if(err) {
         console.log("ERROR\n" + err);
+        message = "Invalid Request";
+        return res.status(400).json({
+          message: message
+        });
       }
       // console.log(result);
       if(result.length) {
@@ -145,6 +148,10 @@ router.get('/products', function(req, res, next) {
     var result    = db.query(sql, function(err, result) {
       if(err) {
         console.log("ERROR\n" + err);
+        message = "Invalid Request";
+        return res.status(400).json({
+          message: message
+        });
       }
       // console.log(result);
       res.status(200).json(result);
@@ -159,6 +166,10 @@ router.get('/products', function(req, res, next) {
     var result    = db.query(sql, function(err, result) {
       if(err) {
         console.log("ERROR\n" + err);
+        message = "Invalid Request";
+        return res.status(400).json({
+          message: message
+        });
       }
       // console.log(result);
       res.status(200).json(result);
@@ -184,7 +195,11 @@ router.post('/products/list', function(req, res, next) {
 
   var result = db.query(sql, function(err, result) {
     if(err) {
-      console.log(err)
+      console.log(err);
+      message = "Invalid Request";
+      return res.status(400).json({
+        message: message
+      });
     } else {
       // console.log(result);
       res.status(200).json(JSON.stringify(result));
@@ -194,12 +209,16 @@ router.post('/products/list', function(req, res, next) {
 
 router.get('/books/ajax', function(req, res, next) {
   var get = req.query;
-  console.log(get);
+  // console.log(get);
   var sql = "Select `title` FROM `book` WHERE `title` LIKE '%" + get.search + "%'";
-  console.log(sql);
+  // console.log(sql);
   var result    = db.query(sql, function(err, result) {
     if(err) {
       console.log("ERROR\n" + err);
+      message = "Invalid Request";
+      return res.status(400).json({
+        message: message
+      });
     }
     var data=[];
     // console.log(result);
@@ -208,6 +227,65 @@ router.get('/books/ajax', function(req, res, next) {
     }
     res.status(200).json(data);
   });
+});
+
+router.get('/bookmarks', function(req, res, next) {
+  var get = req.query;
+  var username = "";
+  try {
+    username = functions.getUserName(get.username, req.session.username);
+  } catch (error) {
+    return res.status(440).json({
+      message: error
+    });
+  }
+  var sql = "Select `book_id` FROM `bookmarks` WHERE `username` = '" + username + "'";
+  console.log(sql);
+  var result    = db.query(sql, function(err, result) {
+    if(err) {
+      console.log("ERROR\n" + err);
+      message = "Invalid Request";
+      return res.status(400).json({
+        message: message
+      });
+    }
+    res.status(200).json(result);
+  });
+});
+
+router.post('/bookmarks', function(req, res, next) {
+  var post = req.body;
+  console.log(post);
+  try {
+    username = functions.getUserName(post.username, req.session.username);
+  } catch (error) {
+    return res.status(440).json({
+      message: error
+    });
+  }
+  var sql = "";
+  try {
+    sql = "INSERT INTO `bookmarks` (`book_id`, `username`) VALUES (" + functions.escape(post.book_id) + "," + functions.escape(username) + ")";
+  } catch (error) {
+    return res.status(440).json({
+      message: error
+    });
+  }
+
+  var query    = db.query(sql, function(err, result) {
+    if(err) {
+      message = "Bookmark Already Exists";
+      // console.log(err);
+      return res.status(400).json({
+        "message" : message
+      });
+    }
+    message    = "Added bookmark";
+    return res.status(200).json({
+      "message:" : message
+    });
+  });
+
 });
 
 module.exports = router;
