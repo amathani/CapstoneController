@@ -119,7 +119,10 @@ router.get('/profile', function(req, res, next) {
   var query    = db.query(sql, function(err, result) {
     if(err) {
       console.log(err);
-      res.status(400);
+      message = "Invalid username"
+      res.status(400).json({
+        message: message
+      });
     }
     res.status(200).json(result);
   });
