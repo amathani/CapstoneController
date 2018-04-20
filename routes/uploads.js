@@ -177,7 +177,12 @@ router.post('/getInfo', upload.single('barcode'), function(req, res, next) {
         readers: ["ean_reader"] // List of active readers
       },
     }, function(result) {
-      if(result.codeResult) {
+      if(!result) {
+        message = "Invalid ISBN/Book not found";
+        return res.status(400).json({
+          message: message
+        });
+      } else if(result.codeResult) {
         isbn_string = result.codeResult.code;
         console.log("result", result.codeResult.code);
         isbn.resolve(isbn_string, function(err, book) {

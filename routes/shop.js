@@ -128,7 +128,8 @@ router.get('/getInfo', function(req, res, next) {
 });
 
 router.get('/books/ajax', function(req, res, next) {
-
+  
+  var get = req.query;
   var category = "book";
   var category_sql = "";
   if (get.category) {
@@ -136,10 +137,9 @@ router.get('/books/ajax', function(req, res, next) {
   }
   category_sql = " AND `category` = " + functions.escape(category);
 
-  var get = req.query;
   // console.log(get);
   var sql = "Select `title` FROM `book` WHERE `title` LIKE '%" + get.search + "%'" + category_sql;
-  // console.log(sql);
+  console.log(sql);
   var result    = db.query(sql, function(err, result) {
     if(err) {
       console.log("ERROR\n" + err);
