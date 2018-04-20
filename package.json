@@ -6,6 +6,7 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "braintree": "^2.9.0",
     "crypto": "^1.0.1",
     "debug": "~2.6.9",
     "express": "~4.15.5",

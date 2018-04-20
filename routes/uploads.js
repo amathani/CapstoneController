@@ -95,11 +95,18 @@ router.post('/product', upload.array('images'), function(req, res, next) {
     if(!post.book_id) {
       var sql = "";
       try {
-        sql = "INSERT INTO `book` (`username`, `uni_id`, `price`, `description`, `preferred_payment_method`, `title`, `author`, `isbn`, `image_paths`) VALUES ("
-        + functions.escape(username) + "," + "1" + "," + functions.escape(post.price)
-        + "," + functions.escape(post.desc) + "," + functions.escape(post.payment)
-        + "," + functions.escape(post.title) + "," + functions.escape(post.author)
-        + "," + functions.escape(post.isbn) + ",'" + image_paths + "')";
+        if(post.category) {
+          sql = "INSERT INTO `book` (`username`, `uni_id`, `price`, `description`, `preferred_payment_method`, `title`, `image_paths`, `category`) VALUES ("
+          + functions.escape(username) + "," + "1" + "," + functions.escape(post.price)
+          + "," + functions.escape(post.desc) + "," + functions.escape(post.payment)
+          + "," + functions.escape(post.title) + ",'" + image_paths + "'," + functions.escape(post.category) + ")";
+        } else {
+          sql = "INSERT INTO `book` (`username`, `uni_id`, `price`, `description`, `preferred_payment_method`, `title`, `author`, `isbn`, `image_paths`) VALUES ("
+          + functions.escape(username) + "," + "1" + "," + functions.escape(post.price)
+          + "," + functions.escape(post.desc) + "," + functions.escape(post.payment)
+          + "," + functions.escape(post.title) + "," + functions.escape(post.author)
+          + "," + functions.escape(post.isbn) + ",'" + image_paths + "')";
+        }
       } catch (error) {
         return res.status(440).json({
           message: error

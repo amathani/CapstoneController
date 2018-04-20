@@ -5,9 +5,16 @@ var functions = require('./functions');
 
 router.get('/books', function(req, res, next) {
   var get = req.query;
+  var category = "book";
+  var category_sql = "";
+  if (get.category) {
+    category = get.category;
+  }
+  category_sql = " AND `category` = " + functions.escape(category);
+
   console.log(get);
   if (get.book_id) {
-    var sql = "Select * FROM `book` where `book_id` = " + functions.escape(get.book_id, res) + "";
+    var sql = "Select * FROM `book` WHERE `book_id` = " + functions.escape(get.book_id, res);
     console.log(sql);
     var result    = db.query(sql, function(err, result) {
       if(err) {
@@ -29,7 +36,8 @@ router.get('/books', function(req, res, next) {
     } else if(get.order_by == "DESC") {
       order_by = " ORDER BY `price` DESC"
     }
-    var sql = "SELECT * FROM `book` WHERE MATCH (title,description,author) AGAINST ('" + get.search + "' IN NATURAL LANGUAGE MODE)" + range + order_by;
+    var sql = "SELECT * FROM `book` WHERE MATCH (title,description,author) AGAINST ('" + get.search + "' IN NATURAL LANGUAGE MODE)"
+    + category_sql + range + order_by;
     console.log(sql);
     var result    = db.query(sql, function(err, result) {
       if(err) {
@@ -41,8 +49,10 @@ router.get('/books', function(req, res, next) {
 
   } else {
     var range = "";
+
+    category_sql = " WHERE `category` = " + functions.escape(category);
     if(get.cost_high && get.cost_low) {
-      range = " WHERE `price` BETWEEN '" + get.cost_low  +"' and '" + get.cost_high + "'";
+      range = " AND `price` BETWEEN '" + get.cost_low  +"' and '" + get.cost_high + "'";
     }
 
     var order_by = "";
@@ -52,7 +62,7 @@ router.get('/books', function(req, res, next) {
       order_by = " ORDER BY `price` DESC"
     }
 
-    var sql = "Select * FROM `book`" + range + order_by;
+    var sql = "Select * FROM `book`" + category_sql + range + order_by;
     console.log(sql);
     var result    = db.query(sql, function(err, result) {
       if(err) {
@@ -117,100 +127,18 @@ router.get('/getInfo', function(req, res, next) {
   });
 });
 
-router.get('/products', function(req, res, next) {
-  var get = req.query;
-  console.log(get);
-  if (get.prod_id) {
-
-    var sql = "Select * FROM `book` where `product` = '" + get.prod_id + "'";
-    console.log(sql);
-    var result    = db.query(sql, function(err, result) {
-      if(err) {
-        console.log("ERROR\n" + err);
-        message = "Invalid Request";
-        return res.status(400).json({
-          message: message
-        });
-      }
-      // console.log(result);
-      if(result.length) {
-        res.status(200).json(result[0]);
-      }
-    });
-
-  } else if (get.search){
-    var range = "";
-    if(get.cost_high && get.cost_low) {
-      range = " and `price` BETWEEN '"+ get.cost_low + "' and '"+ get.cost_high + "'";
-    }
-    var sql = "SELECT * FROM `product` WHERE MATCH (title,description) AGAINST ('" + get.search + "' IN NATURAL LANGUAGE MODE)"
-    console.log(sql);
-    var result    = db.query(sql, function(err, result) {
-      if(err) {
-        console.log("ERROR\n" + err);
-        message = "Invalid Request";
-        return res.status(400).json({
-          message: message
-        });
-      }
-      // console.log(result);
-      res.status(200).json(result);
-    });
-  } else {
-    var range = "";
-    if(get.cost_high && get.cost_low) {
-      range = " WHERE `price` BETWEEN '" + get.cost_low  +"' and '" + get.cost_high + "'";
-    }
-    var sql = "Select * FROM `product`" + range;
-    console.log(sql);
-    var result    = db.query(sql, function(err, result) {
-      if(err) {
-        console.log("ERROR\n" + err);
-        message = "Invalid Request";
-        return res.status(400).json({
-          message: message
-        });
-      }
-      // console.log(result);
-      res.status(200).json(result);
-    });
-  }
-});
-
-// Depricated
-router.post('/products/list', function(req, res, next) {
-  var post = req.body;
-  console.log(post);
-  try {
-    username = functions.getUserName(post.username, req.session.username);
-  } catch (error) {
-    return res.status(440).json({
-      message: error
-    });
-  }
-  var sql = "INSERT INTO `product` (`username`, `uni_id`, `price`, `description`, `preferred_payment_method`, `product_photo_id`) VALUES ("
-  + username + ",'" + "1" + "'," + post.price + "," + post.desc + "," + post.payment + ",'"
-  + "1" + "')";
-  console.log(sql);
-
-  var result = db.query(sql, function(err, result) {
-    if(err) {
-      console.log(err);
-      message = "Invalid Request";
-      return res.status(400).json({
-        message: message
-      });
-    } else {
-      // console.log(result);
-      res.status(200).json(JSON.stringify(result));
-    }
-  });
-});
-
 router.get('/books/ajax', function(req, res, next) {
+
+  var category = "book";
+  var category_sql = "";
+  if (get.category) {
+    category = get.category;
+  }
+  category_sql = " AND `category` = " + functions.escape(category);
+
   var get = req.query;
   // console.log(get);
-  var sql = "Select `title` FROM `book` WHERE `title` LIKE '%" + get.search + "%'";
+  var sql = "Select `title` FROM `book` WHERE `title` LIKE '%" + get.search + "%'" + category_sql;
   // console.log(sql);
   var result    = db.query(sql, function(err, result) {
     if(err) {

@@ -2,6 +2,88 @@ var express = require('express');
 var router = express.Router();
 var functions = require('./functions');
 
+
+router.post('/buyProduct', function(req, res, next) {
+  var post = req.body;
+  var username = "";
+  var sql_requests = "";
+  var sql_faq = "";
+  var sql_bookmarks = "";
+  var sql_book = "";
+  try {
+    username = functions.getUserName(post.username, req.session.username);
+  } catch (error) {
+    return res.status(440).json({
+      message: error
+    });
+  }
+  try {
+    sql_requests = "DELETE FROM `meetups` WHERE product_id = " + functions.escape(post.book_id);
+    sql_faq = "DELETE FROM `faqs` WHERE product_id = " + functions.escape(post.book_id);
+    sql_bookmarks = "DELETE FROM `bookmarks` WHERE book_id = " + functions.escape(post.book_id);
+    sql_book = "DELETE FROM `book` WHERE book_id = " + functions.escape(post.book_id);
+  } catch(error) {
+    return res.status(400).json({
+      message: error
+    });
+  }
+  var result = db.query(sql_requests, function(err, result) {
+    if(err) {
+      console.log(err);
+      message = "Invalid request made";
+      return res.status(400).json({
+        "message" : message
+      });
+    }
+  });
+
+  var result = db.query(sql_faq, function(err, result) {
+    if(err) {
+      console.log(err);
+      message = "Invalid request made";
+      return res.status(400).json({
+        "message" : message
+      });
+    }
+  });
+
+  var result = db.query(sql_bookmarks, function(err, result) {
+    if(err) {
+      console.log(err);
+      message = "Invalid request made";
+      return res.status(400).json({
+        "message" : message
+      });
+    }
+  });
+
+  var result = db.query(sql_requests, function(err, result) {
+    if(err) {
+      console.log(err);
+      message = "Invalid request made";
+      return res.status(400).json({
+        "message" : message
+      });
+    }
+  });
+
+  var result = db.query(sql_book, function(err, result) {
+    if(err) {
+      console.log(err)
+      message = "Invalid request made";
+      res.status(400).json({
+        "message" : message
+      });
+    } else {
+      message = "Purchase Completed";
+      // console.log(result);
+      return res.status(200).json({
+        "message" : message
+      });
+    }
+  });
+});
+
 router.get('/locations', function(req, res, next) {
   var get = req.query;
   var sql      = "SELECT * FROM `meetups_location`";
@@ -10,9 +92,9 @@ router.get('/locations', function(req, res, next) {
     if(err) {
       console.log(err);
       message = "invalid request";
-      res.status(400).json({
+      return res.status(400).json({
         "message" : message
-      })
+      });
     }
     res.status(200).json(result);
   });
