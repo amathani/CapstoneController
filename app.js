@@ -41,7 +41,7 @@ app.set('view engine', 'pug');
 
 // Set up the header for CORS and different HTTP calls
 app.use(function(req, res, next) {
-  res.setHeader("Access-Control-Allow-Origin", "https://projectulist.com");
+  res.setHeader("Access-Control-Allow-Origin", "http://projectulist.com");
   res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
