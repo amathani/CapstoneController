@@ -3,6 +3,7 @@ var router = express.Router();
 var isbn = require('node-isbn');
 var functions = require('./functions');
 
+// Get a book associated with a given book_id
 router.get('/books', function(req, res, next) {
   var get = req.query;
   var category = "book";
@@ -74,6 +75,7 @@ router.get('/books', function(req, res, next) {
   }
 });
 
+// List a book for sale this is a depricated method only for items put to sale without any images
 router.post('/books/list', function(req, res, next) {
   var post = req.body;
   var username = "";
@@ -107,6 +109,7 @@ router.post('/books/list', function(req, res, next) {
   });
 });
 
+// Get information regarding a given ISBN number, this has an improved version of using a barcode image instead
 router.get('/getInfo', function(req, res, next) {
   var get = req.query;
   if(!get.isbn) {
@@ -127,8 +130,9 @@ router.get('/getInfo', function(req, res, next) {
   });
 });
 
+// Search suggestions for items to be searched for
 router.get('/books/ajax', function(req, res, next) {
-  
+
   var get = req.query;
   var category = "book";
   var category_sql = "";
@@ -157,6 +161,7 @@ router.get('/books/ajax', function(req, res, next) {
   });
 });
 
+// Maintains a list of items the user has marked to be interested in
 router.get('/bookmarks', function(req, res, next) {
   var get = req.query;
   var username = "";

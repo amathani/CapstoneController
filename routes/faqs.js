@@ -1,7 +1,10 @@
+// Handles all the different FAQ requests
+
 var express = require('express');
 var router = express.Router();
 var functions = require('./functions');
-/* GET home page. */
+
+// Creates an FAQ request
 router.post('/ask', function(req, res, next) {
   var post = req.body;
   try {
@@ -39,6 +42,7 @@ router.post('/ask', function(req, res, next) {
   });
 });
 
+// Let's a user answer the FAQ request
 router.post('/answer', function(req, res, next) {
   var post = req.body;
   // var username = functions.getUserName(post.username, req.session.username);
@@ -63,6 +67,7 @@ router.post('/answer', function(req, res, next) {
   });
 });
 
+// Retrieves all of the requests made by a user
 router.get('/retrieve', function(req, res, next) {
   var get = req.query;
   if(get.product_id) {

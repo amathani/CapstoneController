@@ -1,3 +1,7 @@
+/**
+  Takes care of all the image upload scenarios
+*/
+
 var express      = require('express');
 var router       = express.Router();
 var multer = require('multer');
@@ -7,7 +11,7 @@ var isbn = require('node-isbn');
 var quagga = require('quagga').default;
 const icecat = require('icecat');
 var functions = require('./functions');
-
+// Use this for non-book barcodes
 const icecatClient = new icecat('projectulist', 'projectUlist@2017');
 
 var storage = multer.diskStorage({
@@ -21,8 +25,10 @@ var storage = multer.diskStorage({
     });
   }
 });
-
+// Set up multer for image storage
 var upload = multer({ storage: storage })
+
+// Create/edit a user profile and upload an image
 router.post('/profile', upload.single('avatar'), function(req, res, next) {
   var body = req.body;
   var username = "";
@@ -62,6 +68,7 @@ router.post('/profile', upload.single('avatar'), function(req, res, next) {
   }
 });
 
+// Create a product with the set of images uploaded
 router.post('/product', upload.array('images'), function(req, res, next) {
 
   var post = req.body;
@@ -152,6 +159,9 @@ router.post('/product', upload.array('images'), function(req, res, next) {
   }
 });
 
+/**
+  Get information using an associated barcode for a given book
+*/
 router.post('/getInfo', upload.single('barcode'), function(req, res, next) {
   if(!req.file) {
     console.log("No File Received");
@@ -203,6 +213,7 @@ router.post('/getInfo', upload.single('barcode'), function(req, res, next) {
   }
 });
 
+// Use this to get product information for non-book products
 router.post('/getProductInfo', upload.single('barcode'), function(req, res, next) {
   if(!req.file) {
     console.log("No File Received");

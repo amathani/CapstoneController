@@ -1,3 +1,5 @@
+// Written by Amit Athani
+
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -21,6 +23,7 @@ var uploads = require('./routes/uploads');
 var app = express();
 
 var mysql = require('mysql');
+// Setup database connection
 var connection = mysql.createConnection({
               host     : 'ulistinstance.cocp2o6qdzv5.us-west-1.rds.amazonaws.com',
               user     : 'root',
@@ -36,17 +39,16 @@ global.db = connection;
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
-// uncomment after placing your favicon in /public
-// app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+// Set up the header for CORS and different HTTP calls
 app.use(function(req, res, next) {
-  res.setHeader("Access-Control-Allow-Origin", "http://projectulist.com");
+  res.setHeader("Access-Control-Allow-Origin", "https://projectulist.com");
   res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
   next();
 });
 
-
+// Set up the session
 app.use(session({
   secret: 'keyboard cat',
   resave: false,
@@ -64,6 +66,7 @@ busboy.extend(app, {
     path: '/uploads',
     allowedPath: /./
 });
+// Setup static file serving for images
 app.use(express.static(path.join(__dirname, 'public')));
 console.log(path.join(__dirname + '/uploads'));
 app.use('/images', express.static(path.join(__dirname + '/uploads')));

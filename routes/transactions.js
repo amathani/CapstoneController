@@ -1,8 +1,10 @@
+// Manages all of the transactions for a given product
+
 var express = require('express');
 var router = express.Router();
 var functions = require('./functions');
 
-
+// Call to sell a product
 router.post('/buyProduct', function(req, res, next) {
   var post = req.body;
   var username = "";
@@ -84,6 +86,7 @@ router.post('/buyProduct', function(req, res, next) {
   });
 });
 
+// Get the most common meeting points
 router.get('/locations', function(req, res, next) {
   var get = req.query;
   var sql      = "SELECT * FROM `meetups_location`";
@@ -100,6 +103,7 @@ router.get('/locations', function(req, res, next) {
   });
 });
 
+// Create a request for a product
 router.post('/create/request', function(req, res, next) {
   var post = req.body;
   console.log(post);
@@ -134,6 +138,7 @@ router.post('/create/request', function(req, res, next) {
   });
 });
 
+// Modify an existing request thorugh change in status/change in seller's condition
 router.post('/requests', function(req, res, next) {
   var post = req.body;
   console.log(post);
@@ -187,6 +192,7 @@ router.post('/requests', function(req, res, next) {
   });
 });
 
+// Get all the requests associated with a user and his items being sold.
 router.get('/requests', function(req, res, next) {
   var get = req.query;
 

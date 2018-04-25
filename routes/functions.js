@@ -1,7 +1,8 @@
+// A set of helper functions
 var express = require('express');
 var sqlString = require('sqlstring');
 var nodemailer = require('nodemailer');
-
+// This for email verification
 var smtpTransport = nodemailer.createTransport({
   service: "gmail",
   auth: {

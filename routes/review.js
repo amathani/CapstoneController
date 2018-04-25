@@ -1,3 +1,5 @@
+// Handles reviewing a user and the providing feedback
+
 var express = require('express');
 var router = express.Router();
 var functions = require('./functions');

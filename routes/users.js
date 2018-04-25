@@ -7,6 +7,9 @@ router.get('/', function(req, res, next) {
   res.send('respond with a resource');
 });
 
+/**
+  Sign up a user using the provided information. Also performs an email validation and checks for correctness of the inputs
+*/
 router.post('/signup', function(req, res, next) {
   message        = '';
   console.log("Signing up user");
@@ -48,6 +51,7 @@ router.post('/signup', function(req, res, next) {
   });
 });
 
+// Logs in a user and sets up the session variables
 router.post('/login', function(req, res, next) {
   message        = '';
   var post = req.body;
@@ -92,11 +96,9 @@ router.post('/login', function(req, res, next) {
 
 });
 
-router.post('/profile', function(req, res, next) {
-  message        = '';
-
-});
-
+/**
+  Gets a user profile for the privided username
+*/
 router.get('/profile', function(req, res, next) {
   var get = req.query;
   var username = "";
@@ -154,6 +156,9 @@ router.get('/listings', function(req, res, next) {
   });
 });
 
+/**
+  Destroys the user session and logs out a user
+*/
 router.get('/logout', function(req, res, next) {
   console.log(req.session.username);
   req.session.destroy(function(err) {
